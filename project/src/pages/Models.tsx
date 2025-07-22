@@ -43,7 +43,7 @@ import {
   Cell
 } from 'recharts';
 import { useStockData } from '../hooks/useStockData';
-import InteractiveForecastDashboard from '../components/InteractiveForecastDashboard';
+
 import ModelComparator from '../components/ModelComparator';
 
 const Models: React.FC = () => {
@@ -239,7 +239,7 @@ const Models: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900 pt-20 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <InteractiveForecastDashboard />
+
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
