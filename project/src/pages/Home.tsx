@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useAnimation, useInView } from 'framer-motion';
 import { 
   ArrowRight, 
   TrendingUp, 
@@ -18,6 +19,29 @@ import {
   Target,
   Sparkles
 } from 'lucide-react';
+
+// Animated Counter component
+const AnimatedCounter = ({ value }: { value: string }) => {
+  const [count, setCount] = React.useState(0);
+  const end = parseInt(value.replace(/\D/g, '')) || 0;
+  useEffect(() => {
+    let start = 0;
+    const duration = 1200;
+    const step = Math.ceil(end / (duration / 16));
+    if (end === 0) return;
+    const interval = setInterval(() => {
+      start += step;
+      if (start >= end) {
+        setCount(end);
+        clearInterval(interval);
+      } else {
+        setCount(start);
+      }
+    }, 16);
+    return () => clearInterval(interval);
+  }, [end]);
+  return <span>{value.includes('%') ? count + '%' : value.includes('K') ? count + 'K+' : value.includes('M') ? count + 'M+' : value}</span>;
+};
 
 const Home: React.FC = () => {
   const features = [
@@ -134,9 +158,22 @@ const Home: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden pt-20 pb-16 sm:pt-24 sm:pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 relative overflow-hidden">
+      {/* Animated Gradient Blobs */}
+      <motion.div
+        className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full opacity-30 blur-3xl z-0"
+        animate={{ y: [0, 40, 0], x: [0, 30, 0] }}
+        transition={{ duration: 10, repeat: Infinity, repeatType: 'loop' }}
+        style={{ filter: 'blur(120px)' }}
+      />
+      <motion.div
+        className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-green-400 to-blue-500 rounded-full opacity-20 blur-3xl z-0"
+        animate={{ y: [0, -40, 0], x: [0, -30, 0] }}
+        transition={{ duration: 12, repeat: Infinity, repeatType: 'loop' }}
+        style={{ filter: 'blur(120px)' }}
+      />
+      {/* Hero Section with Parallax */}
+      <section className="relative overflow-hidden pt-20 pb-16 sm:pt-24 sm:pb-20 z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-blue-900/20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -144,6 +181,7 @@ const Home: React.FC = () => {
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
+              whileHover={{ scale: 1.01 }}
             >
               <div className="flex items-center space-x-2 mb-6">
                 <Sparkles className="h-6 w-6 text-blue-600" />
@@ -153,7 +191,14 @@ const Home: React.FC = () => {
               </div>
               
               <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-                Smart Trading with
+                <motion.span
+                  initial={{ y: 0 }}
+                  whileInView={{ y: [-10, 0] }}
+                  transition={{ duration: 0.8 }}
+                  className="inline-block"
+                >
+                  Smart Trading with
+                </motion.span>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
                   {' '}AI Predictions
                 </span>
@@ -184,12 +229,15 @@ const Home: React.FC = () => {
                   <motion.div
                     key={stat.label}
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 + 0.5 }}
                     className="text-center"
+                    whileHover={{ scale: 1.08 }}
                   >
                     <stat.icon className="h-6 w-6 text-blue-600 mx-auto mb-2" />
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                      <AnimatedCounter value={stat.value} />
+                    </div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</div>
                   </motion.div>
                 ))}
@@ -263,7 +311,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white dark:bg-slate-800">
+      <section id="features" className="py-20 bg-white dark:bg-slate-800 z-10 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -286,7 +334,8 @@ const Home: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.1 }}
-                className="group p-8 bg-gray-50 dark:bg-slate-700 rounded-2xl hover:bg-white dark:hover:bg-slate-600 transition-all hover:shadow-xl"
+                whileHover={{ scale: 1.05, boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)' }}
+                className="group p-8 bg-white/70 dark:bg-slate-700/70 backdrop-blur-lg rounded-2xl hover:bg-white dark:hover:bg-slate-600 transition-all hover:shadow-xl"
               >
                 <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <feature.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -323,6 +372,7 @@ const Home: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.1 }}
+                whileHover={{ scale: 1.05 }}
                 className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow"
               >
                 <div className="flex items-center mb-4">
@@ -353,7 +403,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-white dark:bg-slate-800">
+      <section id="pricing" className="py-20 bg-white dark:bg-slate-800 z-10 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -376,6 +426,7 @@ const Home: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.1 }}
+                whileHover={{ scale: 1.05 }}
                 className={`relative p-8 rounded-2xl ${
                   plan.popular 
                     ? 'bg-gradient-to-b from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-2 border-blue-500 shadow-xl' 
