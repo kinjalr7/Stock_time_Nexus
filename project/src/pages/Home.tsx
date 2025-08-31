@@ -31,8 +31,17 @@ import {
   DollarSign,
   TrendingDown,
   AlertCircle,
-  Info
+  Info,
+  Crown,
+  Globe,
+  Clock,
+  Headphones,
+  Lock
 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import PricingPlans from '../components/PricingPlans';
+import PaymentProcessor from '../components/PaymentProcessor';
+import SubscriptionManager from '../components/SubscriptionManager';
 
 // Animated Counter component
 const AnimatedCounter = ({ value }: { value: string }) => {
@@ -207,6 +216,11 @@ const Home: React.FC = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Pricing system state
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<any>(null);
+  const [showSubscriptionManager, setShowSubscriptionManager] = useState(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -287,6 +301,26 @@ const Home: React.FC = () => {
     }, 100);
   };
 
+  // Pricing system handlers
+  const handlePlanSelect = (plan: any) => {
+    setSelectedPlan(plan);
+    setShowPaymentModal(true);
+  };
+
+  const handlePaymentSuccess = (paymentId: string) => {
+    setShowPaymentModal(false);
+    setShowSubscriptionManager(true);
+    toast.success(`Successfully subscribed to ${selectedPlan?.name} plan!`, {
+      icon: '🎉',
+      duration: 4000
+    });
+  };
+
+  const handlePaymentError = (error: string) => {
+    setShowPaymentModal(false);
+    toast.error(`Payment failed: ${error}`);
+  };
+
   const features = [
     {
       icon: Brain,
@@ -347,51 +381,63 @@ const Home: React.FC = () => {
     }
   ];
 
-  const pricingPlans = [
+  const platformFeatures = [
     {
-      name: 'Starter',
-      price: 0,
-      period: 'month',
-      description: 'Perfect for individual traders',
-      features: [
-        'Basic forecasting models',
-        '5 stock predictions per day',
-        'Email support',
-        'Basic portfolio tracking'
-      ],
-      popular: false
+      icon: Brain,
+      title: 'AI-Powered Forecasting',
+      description: 'Advanced machine learning models including LSTM, Prophet, and ARIMA for accurate stock predictions.'
     },
     {
-      name: 'Professional',
-      price: 99,
-      period: 'month',
-      description: 'Advanced features for serious traders',
-      features: [
-        'All forecasting models',
-        'Unlimited predictions',
-        'News sentiment analysis',
-        'Auto-trading simulation',
-        'Advanced analytics',
-        'Priority support'
-      ],
-      popular: true
+      icon: BarChart3,
+      title: 'Model Comparison',
+      description: 'Compare performance metrics across different models to find the best predictions for your portfolio.'
     },
     {
-      name: 'Enterprise',
-      price: 299,
-      period: 'month',
-      description: 'Complete solution for institutions',
-      features: [
-        'Everything in Professional',
-        'Custom model training',
-        'API access',
-        'White-label solution',
-        'Dedicated support',
-        'Advanced security'
-      ],
-      popular: false
+      icon: Bot,
+      title: 'Auto Trading',
+      description: 'Automated trading simulation with real-time portfolio tracking and performance analytics.'
+    },
+    {
+      icon: Shield,
+      title: 'News Analysis',
+      description: 'Sentiment analysis of financial news using BERT and NLP to enhance prediction accuracy.'
+    },
+    {
+      icon: Target,
+      title: 'Stock Clustering',
+      description: 'Discover similar stocks and get personalized recommendations based on advanced clustering algorithms.'
+    },
+    {
+      icon: Zap,
+      title: 'Real-time Data',
+      description: 'Live market data integration with instant updates and real-time performance monitoring.'
     }
   ];
+
+  const pricingFeatures = [
+    {
+      icon: <Shield className="w-6 h-6" />,
+      title: 'Bank-Level Security',
+      description: 'SSL encryption and PCI DSS compliance'
+    },
+    {
+      icon: <Globe className="w-6 h-6" />,
+      title: '99.9% Uptime',
+      description: 'Guaranteed availability with SLA'
+    },
+    {
+      icon: <Clock className="w-6 h-6" />,
+      title: '24/7 Support',
+      description: 'Round-the-clock customer support'
+    },
+    {
+      icon: <Headphones className="w-6 h-6" />,
+      title: 'Priority Support',
+      description: 'Faster response times for paid plans'
+    }
+  ];
+
+
 
   const stats = [
     { label: 'Active Users', value: '50K+', icon: Users },
@@ -577,7 +623,7 @@ const Home: React.FC = () => {
           </motion.div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
+            {platformFeatures.map((feature, index) => (
               <motion.div
                 key={feature.title}
                 initial={{ opacity: 0, y: 20 }}
@@ -654,74 +700,55 @@ const Home: React.FC = () => {
       {/* Pricing Section */}
       <section id="pricing" className="py-20 bg-white dark:bg-slate-800 z-10 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Integrated Pricing Plans Component */}
+          <PricingPlans onPlanSelect={handlePlanSelect} />
+        </div>
+      </section>
+
+      {/* Features Section for Pricing */}
+      <div className="py-20 bg-gray-50 dark:bg-slate-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Choose Your Trading Edge
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Why Choose Our Platform?
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
-              Flexible pricing for traders of all levels
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              We provide enterprise-grade features with simple, transparent pricing.
             </p>
           </motion.div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {pricingPlans.map((plan, index) => (
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {pricingFeatures.map((feature, index) => (
               <motion.div
-                key={plan.name}
+                key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-                className={`relative p-8 rounded-2xl ${
-                  plan.popular 
-                    ? 'bg-gradient-to-b from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-2 border-blue-500 shadow-xl' 
-                    : 'bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600'
-                }`}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="text-center"
               >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium">
-                      Most Popular
-                    </span>
-                  </div>
-                )}
-                
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{plan.name}</h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-4">{plan.description}</p>
-                  <div className="flex items-baseline justify-center">
-                    <span className="text-5xl font-bold text-gray-900 dark:text-white">${plan.price}</span>
-                    <span className="text-gray-600 dark:text-gray-300 ml-2">/{plan.period}</span>
-                  </div>
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center text-white mx-auto mb-4">
+                  {feature.icon}
                 </div>
-                
-                <ul className="space-y-4 mb-8">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-center">
-                      <Check className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
-                      <span className="text-gray-600 dark:text-gray-300">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                
-                <button
-                  className={`w-full py-4 px-6 rounded-xl font-semibold transition-all ${
-                    plan.popular
-                      ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl'
-                      : 'bg-gray-200 dark:bg-slate-600 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-slate-500'
-                  }`}
-                >
-                  Get Started
-                </button>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  {feature.description}
+                </p>
               </motion.div>
             ))}
           </div>
         </div>
-      </section>
+      </div>
+
+
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
@@ -1118,6 +1145,37 @@ const Home: React.FC = () => {
           />
         </motion.button>
       </div>
+
+      {/* Payment Modal */}
+      {showPaymentModal && selectedPlan && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <PaymentProcessor
+            amount={selectedPlan.price}
+            planName={selectedPlan.name}
+            billingCycle={selectedPlan.billingCycle}
+            onSuccess={handlePaymentSuccess}
+            onError={handlePaymentError}
+            onCancel={() => setShowPaymentModal(false)}
+          />
+        </div>
+      )}
+
+      {/* Subscription Manager Modal */}
+      {showSubscriptionManager && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <SubscriptionManager />
+            <div className="p-6 border-t border-gray-200 dark:border-slate-600">
+              <button
+                onClick={() => setShowSubscriptionManager(false)}
+                className="w-full px-6 py-3 bg-gray-900 dark:bg-slate-700 text-white rounded-lg hover:bg-gray-800 dark:hover:bg-slate-600 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
