@@ -94,7 +94,7 @@ const Footer: React.FC = () => {
             </p>
             <div className="mt-4 md:mt-0 flex items-center space-x-6">
               <span className="text-gray-600 dark:text-gray-400 text-sm">
-                Made with ❤️ for traders
+                Made with Tirth Patel
               </span>
               <div className="flex items-center space-x-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>

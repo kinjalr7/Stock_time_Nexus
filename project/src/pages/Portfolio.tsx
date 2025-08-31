@@ -64,18 +64,18 @@ const Portfolio: React.FC = () => {
   const [selectedHolding, setSelectedHolding] = useState<string | null>(null);
 
   // Enhanced portfolio data
-  const portfolioHistory = Array.from({ length: 30 }, (_, i) => {
+  const portfolioHistory = Array.from({ length: timeframe === '1W' ? 7 : 30 }, (_, i) => {
     const date = new Date();
-    date.setDate(date.getDate() - (29 - i));
+    date.setDate(date.getDate() - ((timeframe === '1W' ? 6 : 29) - i));
     const baseValue = 100000;
-    const growth = (i / 29) * 0.18; // 18% growth over 30 days
+    const growth = (i / (timeframe === '1W' ? 6 : 29)) * (timeframe === '1W' ? 0.04 : 0.18);
     const noise = (Math.random() - 0.5) * 0.03;
     return {
       date: date.toISOString().split('T')[0],
       value: baseValue * (1 + growth + noise),
-      benchmark: baseValue * (1 + (i / 29) * 0.12 + (Math.random() - 0.5) * 0.02), // S&P 500 benchmark
-      cash: 50000 - (i * 1000),
-      invested: baseValue * (1 + growth + noise) - (50000 - (i * 1000))
+      benchmark: baseValue * (1 + (i / (timeframe === '1W' ? 6 : 29)) * (timeframe === '1W' ? 0.01 : 0.12) + (Math.random() - 0.5) * 0.02),
+      cash: 50000 - (i * (timeframe === '1W' ? 100 : 1000)),
+      invested: baseValue * (1 + growth + noise) - (50000 - (i * (timeframe === '1W' ? 100 : 1000)))
     };
   });
 

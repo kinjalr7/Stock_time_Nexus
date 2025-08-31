@@ -63,6 +63,8 @@ const Trading: React.FC = () => {
     strategy: strategies[0]?.id || ''
   });
 
+  const [chartType, setChartType] = useState<'line' | 'candlestick'>('line');
+
   const performanceMetrics = getPerformanceMetrics();
 
   const portfolioHistory = Array.from({ length: 30 }, (_, i) => {
@@ -390,44 +392,66 @@ const Trading: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+              {/* Chart Type Toggle */}
+              <div className="flex space-x-2 mb-4">
+                <button
+                  className={`px-3 py-1 rounded ${chartType === 'line' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300'}`}
+                  onClick={() => setChartType('line')}
+                >
+                  Line
+                </button>
+                <button
+                  className={`px-3 py-1 rounded ${chartType === 'candlestick' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300'}`}
+                  onClick={() => setChartType('candlestick')}
+                >
+                  Candlestick
+                </button>
+              </div>
               <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={portfolioHistory}>
-                    <defs>
-                      <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                    <XAxis dataKey="date" className="text-xs" />
-                    <YAxis className="text-xs" />
-                    <Tooltip 
-                      contentStyle={{
-                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                        border: 'none',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                      }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="value"
-                      stroke="#3B82F6"
-                      strokeWidth={2}
-                      fillOpacity={1}
-                      fill="url(#colorValue)"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="pnl"
-                      stroke="#10B981"
-                      strokeWidth={2}
-                      dot={false}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+                {chartType === 'line' && (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={portfolioHistory}>
+                      <defs>
+                        <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                      <XAxis dataKey="date" className="text-xs" />
+                      <YAxis className="text-xs" />
+                      <Tooltip 
+                        contentStyle={{
+                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                          border: 'none',
+                          borderRadius: '8px',
+                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                        }}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="value"
+                        stroke="#3B82F6"
+                        strokeWidth={2}
+                        fillOpacity={1}
+                        fill="url(#colorValue)"
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="pnl"
+                        stroke="#10B981"
+                        strokeWidth={2}
+                        dot={false}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                )}
+                {chartType === 'candlestick' && (
+                  <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
+                    {/* TODO: Replace with real candlestick chart component */}
+                    <span>Candlestick chart coming soon...</span>
+                  </div>
+                )}
               </div>
             </div>
 

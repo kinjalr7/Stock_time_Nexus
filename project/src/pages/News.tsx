@@ -29,7 +29,14 @@ const News: React.FC = () => {
   const [selectedSymbol, setSelectedSymbol] = useState<string>('all');
 
   useEffect(() => {
-    fetchStockData(['AAPL', 'TSLA', 'GOOGL', 'MSFT', 'AMZN']);
+    const fetchNews = async () => {
+      const res = await fetch('/api/news/latest?symbol=AAPL');
+      const data = await res.json();
+      // setNews(data); // This line was removed as per the edit hint
+    };
+    fetchNews();
+    const interval = setInterval(fetchNews, 5 * 60 * 1000); // Refresh every 5 minutes
+    return () => clearInterval(interval);
   }, []);
 
   const filteredNews = news.filter(item => {

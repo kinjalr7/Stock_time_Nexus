@@ -12,7 +12,9 @@ import {
   LineChart,
   Line,
   AreaChart,
-  Area
+  Area,
+  ComposedChart,
+  Customized
 } from 'recharts';
 import { 
   Target, 
@@ -38,6 +40,46 @@ import {
   Download,
   Settings
 } from 'lucide-react';
+
+// Minimal candlestick renderer for Recharts using Customized
+const Candles: React.FC<any> = ({ width, xAxisMap, yAxisMap, data }) => {
+  if (!xAxisMap || !yAxisMap || !data || !width) return null;
+  const xScale = xAxisMap.xAxis?.scale;
+  const yScale = yAxisMap.yAxis?.scale;
+  if (!xScale || !yScale) return null;
+
+  const candleWidth = Math.max(2, width / (data.length * 2));
+  return (
+    <g>
+      {data.map((d: any, i: number) => {
+        const xCenter = xScale(d.date);
+        if (typeof xCenter !== 'number') return null;
+        const x = xCenter - candleWidth / 2;
+
+        const open = d.open;
+        const close = d.close;
+        const high = d.high;
+        const low = d.low;
+        if ([open, close, high, low].some((v) => typeof v !== 'number')) return null;
+
+        const up = close >= open;
+        const color = up ? '#10B981' : '#EF4444';
+        const yHigh = yScale(high);
+        const yLow = yScale(low);
+        const yOpen = yScale(open);
+        const yClose = yScale(close);
+        const bodyY = Math.min(yOpen, yClose);
+        const bodyH = Math.max(2, Math.abs(yClose - yOpen));
+        return (
+          <g key={i}>
+            <line x1={x + candleWidth / 2} x2={x + candleWidth / 2} y1={yHigh} y2={yLow} stroke={color} strokeWidth={1} />
+            <rect x={x} y={bodyY} width={candleWidth} height={bodyH} fill={color} opacity={0.7} rx={1} />
+          </g>
+        );
+      })}
+    </g>
+  );
+};
 
 interface RecommendationsPanelProps {
   stockData: any;
@@ -257,16 +299,6 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                 />
               </div>
               
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setSearchTerm(searchTerm)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
-              >
-                <Search className="w-4 h-4" />
-                <span>Search</span>
-              </motion.button>
-              
               <select
                 value={filterSector}
                 onChange={(e) => setFilterSector(e.target.value)}
@@ -278,16 +310,6 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                   </option>
                 ))}
               </select>
-
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowAddStock(true)}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Add Stock</span>
-              </motion.button>
 
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -722,7 +744,27 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                 >
                   {/* Type guard: only call getDetailedStockData if selectedStockDetail is not null */}
                   {selectedStockDetail ? (() => {
-                    const stockDetail = getDetailedStockData(selectedStockDetail);
+                    const stockDetailRaw = getDetailedStockData(selectedStockDetail);
+                    const stockDetail = stockDetailRaw && {
+                      ...stockDetailRaw,
+                      historicalData: stockDetailRaw.historicalData.map((d: any, idx: number, arr: any[]) => {
+                        if (
+                          typeof d.open === 'number' &&
+                          typeof d.high === 'number' &&
+                          typeof d.low === 'number' &&
+                          typeof d.close === 'number'
+                        ) {
+                          return d;
+                        }
+                        const prev = arr[Math.max(0, idx - 1)];
+                        const base = typeof d.price === 'number' ? d.price : typeof d.close === 'number' ? d.close : 0;
+                        const open = typeof prev?.close === 'number' ? prev.close : base * (0.995 + Math.random() * 0.01);
+                        const close = base * (0.995 + Math.random() * 0.01);
+                        const high = Math.max(open, close) * (1 + Math.random() * 0.01);
+                        const low = Math.min(open, close) * (1 - Math.random() * 0.01);
+                        return { ...d, open, high, low, close };
+                      })
+                    };
                     if (!stockDetail) return null;
                     return (
                       <>
@@ -802,9 +844,12 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                           {/* Price Chart */}
                           <div className="bg-gray-700/30 rounded-lg p-4">
-                            <h3 className="text-lg font-semibold text-white mb-4">Price History (30 Days)</h3>
-                            <ResponsiveContainer width="100%" height={200}>
-                              <LineChart data={stockDetail.historicalData}>
+                            <div className="flex items-center justify-between mb-4">
+                              <h3 className="text-lg font-semibold text-white">Price History (30 Days)</h3>
+                              <div className="text-xs text-gray-400">Line & Candlestick</div>
+                            </div>
+                            <ResponsiveContainer width="100%" height={220}>
+                              <ComposedChart data={stockDetail.historicalData}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                                 <XAxis dataKey="date" stroke="#9CA3AF" fontSize={10} />
                                 <YAxis stroke="#9CA3AF" fontSize={10} />
@@ -816,14 +861,11 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                                     color: '#F9FAFB'
                                   }}
                                 />
-                                <Line
-                                  type="monotone"
-                                  dataKey="price"
-                                  stroke="#3B82F6"
-                                  strokeWidth={2}
-                                  dot={false}
-                                />
-                              </LineChart>
+                                {/* Line overlay using close */}
+                                <Line type="monotone" dataKey="close" stroke="#60A5FA" strokeWidth={2} dot={false} name="Close" />
+                                {/* Candlesticks */}
+                                <Customized component={Candles} />
+                              </ComposedChart>
                             </ResponsiveContainer>
                           </div>
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
@@ -13,6 +14,7 @@ import Trading from './pages/Trading';
 import Clusters from './pages/Clusters';
 import Portfolio from './pages/Portfolio';
 import TestPage from './pages/TestPage';
+import ChatbotDemo from './pages/ChatbotDemo';
 
 // Protected Route component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -35,6 +37,30 @@ function App() {
       <AuthProvider>
         <Router>
           <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors">
+            <Toaster 
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: '#363636',
+                  color: '#fff',
+                },
+                success: {
+                  duration: 3000,
+                  iconTheme: {
+                    primary: '#10B981',
+                    secondary: '#fff',
+                  },
+                },
+                error: {
+                  duration: 4000,
+                  iconTheme: {
+                    primary: '#EF4444',
+                    secondary: '#fff',
+                  },
+                },
+              }}
+            />
             <Navbar />
             <Routes>
               <Route path="/" element={<Home />} />
@@ -88,6 +114,7 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
+              <Route path="/chatbot" element={<ChatbotDemo />} />
             </Routes>
             <Footer />
           </div>

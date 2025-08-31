@@ -5,6 +5,7 @@ from backend.portfolio import router as portfolio_router
 from backend.trading import router as trading_router
 from backend.websocket import router as websocket_router
 from backend.model_performance import router as model_performance_router
+from backend.auth import router as auth_router
 
 app = FastAPI()
 
@@ -19,4 +20,5 @@ app.add_middleware(
 app.include_router(portfolio_router, prefix="/api/portfolio", tags=["Portfolio"])
 app.include_router(trading_router, prefix="/api/trading", tags=["Trading"])
 app.include_router(websocket_router, prefix="/api/ws", tags=["WebSocket"])
-app.include_router(model_performance_router, prefix="/api/models", tags=["Model Performance"]) 
+app.include_router(model_performance_router, prefix="/api/models", tags=["Model Performance"])
+app.include_router(auth_router, prefix="/api/auth", tags=["Authentication"])

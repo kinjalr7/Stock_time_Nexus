@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAnimation, useInView } from 'framer-motion';
 import { 
   ArrowRight, 
@@ -17,7 +17,21 @@ import {
   Award,
   Users,
   Target,
-  Sparkles
+  Sparkles,
+  ChevronLeft,
+  Home as HomeIcon,
+  Newspaper,
+  Cpu,
+  MessageCircle,
+  X,
+  Send,
+  HelpCircle,
+  Settings,
+  BarChart,
+  DollarSign,
+  TrendingDown,
+  AlertCircle,
+  Info
 } from 'lucide-react';
 
 // Animated Counter component
@@ -43,7 +57,236 @@ const AnimatedCounter = ({ value }: { value: string }) => {
   return <span>{value.includes('%') ? count + '%' : value.includes('K') ? count + 'K+' : value.includes('M') ? count + 'M+' : value}</span>;
 };
 
+// Chatbot Training Data
+const chatbotResponses = {
+  greetings: {
+    patterns: ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening'],
+    responses: [
+      "👋 Hello! I'm your AI trading assistant. How can I help you today?",
+      "Hi there! Ready to explore the world of AI-powered trading?",
+      "Welcome! I'm here to help you with stock analysis and trading insights."
+    ]
+  },
+  features: {
+    patterns: ['features', 'what can you do', 'capabilities', 'functions', 'help'],
+    responses: [
+      "🚀 **Complete Platform Features:**\n\n📊 **AI-Powered Forecasting:**\n• LSTM Neural Networks for complex patterns\n• Prophet for seasonal trends\n• ARIMA for statistical analysis\n• Ensemble methods for 94% accuracy\n\n📈 **Portfolio Management:**\n• Real-time portfolio tracking\n• Performance analytics & metrics\n• Risk assessment & diversification\n• AI-powered rebalancing\n• Historical performance analysis\n\n⚡ **Trading Features:**\n• Automated trading simulation\n• Real-time market data\n• AI buy/sell signals\n• Risk management tools\n• Strategy backtesting\n\n🔍 **Advanced Analytics:**\n• Stock clustering & recommendations\n• News sentiment analysis (BERT)\n• Technical indicators (RSI, MACD, Bollinger)\n• Model performance comparison\n• Interactive charts (Line & Candlestick)\n\n📰 **Market Intelligence:**\n• Real-time financial news\n• Sentiment impact analysis\n• Market trend identification\n• Economic indicator tracking\n\n💼 **Professional Tools:**\n• Custom model training\n• API access for developers\n• White-label solutions\n• Advanced security & compliance",
+      "🎯 **All-In-One Trading Platform:**\n\n🤖 **AI Models:** LSTM, Prophet, ARIMA, BERT\n📊 **Charts:** Line, Candlestick, Volume, Technical\n📈 **Portfolio:** Tracking, Analytics, Rebalancing\n⚡ **Trading:** Auto-trading, Signals, Risk Management\n🔍 **Analysis:** Clustering, Sentiment, News\n📱 **Access:** Web, Mobile, API\n\nEverything you need for modern trading!"
+    ]
+  },
+  models: {
+    patterns: ['models', 'lstm', 'prophet', 'arima', 'machine learning', 'ai models', 'forecasting'],
+    responses: [
+      "📊 Our AI models include:\n• LSTM (Long Short-Term Memory) - Best for time series\n• Prophet - Facebook's forecasting tool\n• ARIMA - Statistical time series analysis\n• BERT - For news sentiment analysis\n\nEach model has different strengths for various market conditions.",
+      "🤖 We use multiple ML models:\n• LSTM: Captures complex patterns in stock data\n• Prophet: Handles seasonality and trends\n• ARIMA: Statistical approach for predictions\n• Ensemble methods for improved accuracy"
+    ]
+  },
+  pricing: {
+    patterns: ['price', 'cost', 'pricing', 'subscription', 'plan', 'free', 'paid'],
+    responses: [
+      "💰 Our pricing plans:\n• Starter: Free (basic features)\n• Professional: $99/month (advanced features)\n• Enterprise: $299/month (full solution)\n\nAll plans include AI predictions and basic analytics.",
+      "💳 Pricing options:\n• Free tier: 5 predictions/day\n• Pro: Unlimited predictions + auto-trading\n• Enterprise: Custom models + API access"
+    ]
+  },
+  portfolio: {
+    patterns: ['portfolio', 'investment', 'stocks', 'holdings', 'assets'],
+    responses: [
+      "📈 Portfolio features:\n• Real-time tracking of your investments\n• Performance analytics and metrics\n• Risk assessment and diversification\n• AI-powered rebalancing suggestions\n• Historical performance analysis",
+      "💼 Your portfolio management:\n• Track multiple stocks and assets\n• Get AI-driven investment recommendations\n• Monitor performance with advanced charts\n• Receive alerts for optimal trading times"
+    ]
+  },
+  trading: {
+    patterns: ['trading', 'buy', 'sell', 'trade', 'automated', 'auto trading'],
+    responses: [
+      "⚡ Trading features:\n• Automated trading simulation\n• Real-time market data\n• AI-powered buy/sell signals\n• Risk management tools\n• Performance tracking and analytics",
+      "🎯 Smart trading capabilities:\n• Automated strategy execution\n• Real-time market monitoring\n• AI-generated trading signals\n• Portfolio rebalancing\n• Risk assessment and alerts"
+    ]
+  },
+  accuracy: {
+    patterns: ['accuracy', 'precision', 'reliable', 'trust', 'performance', 'how accurate'],
+    responses: [
+      "🎯 Our AI models achieve:\n• 94% overall accuracy rate\n• 87% precision in trend prediction\n• 91% recall in market movements\n• Continuous learning and improvement\n• Backtested on historical data",
+      "📊 Model performance:\n• LSTM: 92% accuracy\n• Prophet: 89% accuracy\n• ARIMA: 85% accuracy\n• Ensemble: 94% accuracy\n\nResults vary by market conditions."
+    ]
+  },
+  news: {
+    patterns: ['news', 'sentiment', 'analysis', 'market news', 'financial news'],
+    responses: [
+      "📰 News analysis features:\n• Real-time financial news monitoring\n• BERT-based sentiment analysis\n• Impact assessment on stocks\n• News-driven trading signals\n• Market sentiment tracking",
+      "🔍 News sentiment capabilities:\n• Analyze thousands of news sources\n• Calculate sentiment scores\n• Predict market reactions\n• Generate news-based alerts\n• Historical sentiment trends"
+    ]
+  },
+  support: {
+    patterns: ['support', 'help', 'contact', 'customer service', 'assistance'],
+    responses: [
+      "🛠️ Need help?\n• Email: support@nexus-trading.com\n• Live chat: Available 24/7\n• Documentation: Comprehensive guides\n• Community: Join our trading forum\n• Priority support for Pro users",
+      "💬 Support options:\n• 24/7 AI assistant (me!)\n• Human support team\n• Video tutorials and guides\n• Community discussions\n• One-on-one consultations"
+    ]
+  },
+  default: {
+    responses: [
+      "I'm not sure about that. Could you rephrase your question? I can help with trading, AI models, portfolio management, and platform features.",
+      "Let me help you with something else. I'm knowledgeable about stock predictions, trading strategies, and our platform features.",
+      "I'd be happy to help! Try asking about our AI models, trading features, portfolio management, or pricing plans."
+    ]
+  }
+};
+
+// Chatbot Logic
+const getChatbotResponse = (userMessage: string): string => {
+  const message = userMessage.toLowerCase();
+  
+  // Check for greetings
+  if (chatbotResponses.greetings.patterns.some(pattern => message.includes(pattern))) {
+    return chatbotResponses.greetings.responses[Math.floor(Math.random() * chatbotResponses.greetings.responses.length)];
+  }
+  
+  // Check for features
+  if (chatbotResponses.features.patterns.some(pattern => message.includes(pattern))) {
+    return chatbotResponses.features.responses[Math.floor(Math.random() * chatbotResponses.features.responses.length)];
+  }
+  
+  // Check for models
+  if (chatbotResponses.models.patterns.some(pattern => message.includes(pattern))) {
+    return chatbotResponses.models.responses[Math.floor(Math.random() * chatbotResponses.models.responses.length)];
+  }
+  
+  // Check for pricing
+  if (chatbotResponses.pricing.patterns.some(pattern => message.includes(pattern))) {
+    return chatbotResponses.pricing.responses[Math.floor(Math.random() * chatbotResponses.pricing.responses.length)];
+  }
+  
+  // Check for portfolio
+  if (chatbotResponses.portfolio.patterns.some(pattern => message.includes(pattern))) {
+    return chatbotResponses.portfolio.responses[Math.floor(Math.random() * chatbotResponses.portfolio.responses.length)];
+  }
+  
+  // Check for trading
+  if (chatbotResponses.trading.patterns.some(pattern => message.includes(pattern))) {
+    return chatbotResponses.trading.responses[Math.floor(Math.random() * chatbotResponses.trading.responses.length)];
+  }
+  
+  // Check for accuracy
+  if (chatbotResponses.accuracy.patterns.some(pattern => message.includes(pattern))) {
+    return chatbotResponses.accuracy.responses[Math.floor(Math.random() * chatbotResponses.accuracy.responses.length)];
+  }
+  
+  // Check for news
+  if (chatbotResponses.news.patterns.some(pattern => message.includes(pattern))) {
+    return chatbotResponses.news.responses[Math.floor(Math.random() * chatbotResponses.news.responses.length)];
+  }
+  
+  // Check for support
+  if (chatbotResponses.support.patterns.some(pattern => message.includes(pattern))) {
+    return chatbotResponses.support.responses[Math.floor(Math.random() * chatbotResponses.support.responses.length)];
+  }
+  
+  // Default response
+  return chatbotResponses.default.responses[Math.floor(Math.random() * chatbotResponses.default.responses.length)];
+};
+
+// Message interface
+interface ChatMessage {
+  id: string;
+  text: string;
+  sender: 'user' | 'bot';
+  timestamp: Date;
+}
+
 const Home: React.FC = () => {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [hasUnreadMessages, setHasUnreadMessages] = useState(true);
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: '1',
+      text: "👋 Hi! I'm your AI trading assistant. I can help you with stock analysis, portfolio optimization, and market insights. What would you like to know?",
+      sender: 'bot',
+      timestamp: new Date()
+    }
+  ]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSendMessage = async () => {
+    if (!inputMessage.trim()) return;
+
+    const userMessage: ChatMessage = {
+      id: Date.now().toString(),
+      text: inputMessage,
+      sender: 'user',
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputMessage('');
+    setIsTyping(true);
+
+    // Simulate typing delay
+    setTimeout(() => {
+      const botResponse = getChatbotResponse(inputMessage);
+      const botMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        text: botResponse,
+        sender: 'bot',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, botMessage]);
+      setIsTyping(false);
+    }, 1500);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  // Add quick action buttons for common questions
+  const quickActions = [
+    { text: "What features do you offer?", icon: "🚀" },
+    { text: "How accurate are your models?", icon: "📊" },
+    { text: "Tell me about pricing", icon: "💰" },
+    { text: "How does trading work?", icon: "⚡" }
+  ];
+
+  const handleQuickAction = (text: string) => {
+    setInputMessage(text);
+    // Auto-send after a brief delay
+    setTimeout(() => {
+      const userMessage: ChatMessage = {
+        id: Date.now().toString(),
+        text: text,
+        sender: 'user',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, userMessage]);
+      setInputMessage('');
+      setIsTyping(true);
+
+      setTimeout(() => {
+        const botResponse = getChatbotResponse(text);
+        const botMessage: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          text: botResponse,
+          sender: 'bot',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, botMessage]);
+        setIsTyping(false);
+      }, 1500);
+    }, 100);
+  };
+
   const features = [
     {
       icon: Brain,
@@ -107,7 +350,7 @@ const Home: React.FC = () => {
   const pricingPlans = [
     {
       name: 'Starter',
-      price: 29,
+      price: 0,
       period: 'month',
       description: 'Perfect for individual traders',
       features: [
@@ -156,6 +399,12 @@ const Home: React.FC = () => {
     { label: 'Accuracy Rate', value: '94%', icon: Target },
     { label: 'Awards Won', value: '12', icon: Award }
   ];
+
+  const navigate = useNavigate();
+  const handleNav = (path: string) => {
+    navigate(path);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 relative overflow-hidden">
@@ -503,6 +752,372 @@ const Home: React.FC = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Team Section */}
+      <section className="py-20 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-slate-900 dark:to-blue-900/30">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Meet Our Team
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              The passionate minds behind our AI-powered trading platform
+            </p>
+          </motion.div>
+          {(() => {
+            const team = [
+              {
+                name: 'Dushyant Chawda',
+                role: 'Mentor Of This Project',
+                avatar: 'tirthpicc.png',
+                work: ' The project mentor by guiding team members and coordinating project activities to ensure successful and timely completion.'
+              },
+              {
+                name: 'Tirth Patel',
+                role: 'Data Analyst',
+                avatar: 'tirthpic.png',
+                work: 'Developed and optimized machine learning models for stock prediction and sentiment analysis.'
+              },
+              {
+                name: 'Kinjal Rathod',
+                role: 'Python Developer',
+                avatar: 'Kinjal_1.jpg',
+                work: 'Python backend developer to coordinate tasks and contribute to the successful execution of the project.'
+              },
+              {
+                name: 'Trusha Savaliya',
+                role: 'Python Developer',
+                avatar: 'Trusha.jpg',
+                work: 'Managed DataBase deployment and ensured high availability.'
+              },
+              {
+                name: 'Hardik Chauhan',
+                role: 'Frontend Developer',
+                avatar: 'Hardik.jpg',
+                work: 'esigned the modern, user-friendly interface and 3D visual effects for the platform.'
+              }
+            ];
+            const [current, setCurrent] = React.useState(0);
+            // Remove any previous timerRef declaration, only use this:
+            const timerRef = React.useRef<number | null>(null);
+            const prev = () => {
+              setCurrent((c) => (c === 0 ? team.length - 1 : c - 1));
+              resetTimer();
+            };
+            const next = () => {
+              setCurrent((c) => (c === team.length - 1 ? 0 : c + 1));
+              resetTimer();
+            };
+            const goTo = (idx: number) => {
+              setCurrent(idx);
+              resetTimer();
+            };
+            const resetTimer = () => {
+              if (timerRef.current) clearInterval(timerRef.current);
+              timerRef.current = window.setInterval(() => {
+                setCurrent((c) => (c === team.length - 1 ? 0 : c + 1));
+              }, 10000);
+            };
+            React.useEffect(() => {
+              timerRef.current = window.setInterval(() => {
+                setCurrent((c) => (c === team.length - 1 ? 0 : c + 1));
+              }, 10000);
+              return () => {
+                if (timerRef.current) clearInterval(timerRef.current);
+              };
+            }, []);
+            const member = team[current];
+            return (
+              <div className="flex flex-col items-center">
+                <div className="relative w-full flex items-center justify-center mb-8" style={{ perspective: '1200px' }}>
+                  <motion.div
+                    key={member.name}
+                    initial={{ opacity: 0, rotateY: 60 }}
+                    animate={{ opacity: 1, rotateY: 0 }}
+                    exit={{ opacity: 0, rotateY: -60 }}
+                    transition={{ duration: 0.6 }}
+                    className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-10 flex flex-col items-center text-center hover:shadow-blue-200 dark:hover:shadow-blue-900 transition-all group"
+                    style={{ transformStyle: 'preserve-3d', minWidth: 320, maxWidth: 400 }}
+                  >
+                    <div className="w-32 h-32 rounded-full overflow-hidden shadow-lg mb-4 border-4 border-blue-100 dark:border-blue-900 group-hover:scale-110 transition-transform bg-gradient-to-br from-blue-200 to-purple-200 dark:from-blue-900/40 dark:to-purple-900/40">
+                      <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{member.name}</h3>
+                    <p className="text-blue-600 dark:text-blue-400 font-semibold mb-2">{member.role}</p>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">{member.work}</p>
+                    <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-16 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full blur-lg opacity-40 group-hover:opacity-80 transition-all"></div>
+                  </motion.div>
+                  <button
+                    onClick={prev}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 bg-white dark:bg-slate-700 rounded-full shadow p-2 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+                    aria-label="Previous"
+                  >
+                    <ChevronLeft className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  </button>
+                  <button
+                    onClick={next}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 bg-white dark:bg-slate-700 rounded-full shadow p-2 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+                    aria-label="Next"
+                  >
+                    <ChevronRight className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  </button>
+                </div>
+                <div className="flex gap-2 mt-2">
+                  {team.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => goTo(idx)}
+                      className={`w-3 h-3 rounded-full ${current === idx ? 'bg-blue-600' : 'bg-blue-200 dark:bg-blue-900/40'} transition-colors`}
+                      aria-label={`Go to member ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+      </section>
+
+      {/* Chat Bot Button */}
+      <div className="fixed bottom-6 right-6 z-50">
+        {/* Chat Window */}
+        <AnimatePresence>
+        {isChatOpen && (
+          <motion.div
+            key="chat-window"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            className="absolute bottom-16 right-0 w-96 h-[500px] bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/50 dark:border-slate-600/50 overflow-hidden"
+            style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1)' }}
+          >
+            {/* Chat Header */}
+            <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 p-6 relative overflow-hidden">
+              {/* Background Pattern */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+              
+              <div className="relative flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="relative">
+                    <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                      <Bot className="h-6 w-6 text-white" />
+                    </div>
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
+                  </div>
+                  <div className="bg-white/90 dark:bg-slate-900/40 rounded-xl px-3 py-1 shadow-sm">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <p className="text-gray-700 dark:text-blue-100 text-xs font-medium">Online • Ready to help</p>
+                    </div>
+                  </div>
+                </div>
+                <motion.button
+                  onClick={() => setIsChatOpen(false)}
+                  whileTap={{ y: 2 }}
+                  className="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all duration-200 backdrop-blur-sm"
+                >
+                  <X className="h-4 w-4 text-white" />
+                </motion.button>
+              </div>
+            </div>
+
+            {/* Chat Messages */}
+            <div className="p-6 h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-slate-600">
+              <div className="space-y-6">
+                {messages.map((message) => (
+                  <motion.div
+                    key={message.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className={`flex items-start space-x-3 ${message.sender === 'user' ? 'justify-end' : ''}`}
+                  >
+                    {message.sender === 'bot' && (
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <Bot className="h-5 w-5 text-white" />
+                      </div>
+                    )}
+                    
+                    <div className={`rounded-2xl p-4 max-w-xs shadow-sm ${
+                      message.sender === 'user' 
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white' 
+                        : 'bg-gray-50 dark:bg-slate-700/50'
+                    }`}>
+                      <div className={`text-sm leading-relaxed ${
+                        message.sender === 'user' ? 'text-white' : 'text-gray-700 dark:text-gray-300'
+                      }`}>
+                        {message.text.split('\n').map((line, index) => (
+                          <div key={index}>
+                            {line}
+                            {index < message.text.split('\n').length - 1 && <br />}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {message.sender === 'user' && (
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <span className="text-white text-sm font-bold">U</span>
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+
+                {/* Quick Action Buttons - Show only when there's only the welcome message */}
+                {messages.length === 1 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="space-y-3"
+                  >
+                    <p className="text-xs text-gray-500 dark:text-gray-400 text-center">Quick questions:</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {quickActions.map((action, index) => (
+                        <motion.button
+                          key={index}
+                          onClick={() => handleQuickAction(action.text)}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="p-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600 transition-all duration-200 text-left"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <span className="text-lg">{action.icon}</span>
+                            <span className="truncate">{action.text}</span>
+                          </div>
+                        </motion.button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Typing Indicator */}
+                {isTyping && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex items-start space-x-3"
+                  >
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                      <Bot className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="bg-gray-50 dark:bg-slate-700/50 rounded-2xl p-4 shadow-sm">
+                      <div className="flex space-x-1">
+                        <motion.div
+                          className="w-2 h-2 bg-gray-400 rounded-full"
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
+                        />
+                        <motion.div
+                          className="w-2 h-2 bg-gray-400 rounded-full"
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
+                        />
+                        <motion.div
+                          className="w-2 h-2 bg-gray-400 rounded-full"
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+                
+                <div ref={messagesEndRef} />
+              </div>
+            </div>
+
+            {/* Chat Input */}
+            <div className="p-6 border-t border-gray-100 dark:border-slate-600/50 bg-gray-50/50 dark:bg-slate-700/30">
+              <div className="flex space-x-3">
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Ask me anything about trading..."
+                    className="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
+                  />
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs">⌘</span>
+                    </div>
+                  </div>
+                </div>
+                <button 
+                  onClick={handleSendMessage}
+                  disabled={!inputMessage.trim()}
+                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Send className="h-4 w-4" />
+                </button>
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
+                Press Enter to send • Powered by AI
+              </p>
+            </div>
+          </motion.div>
+        )}
+        </AnimatePresence>
+
+        {/* Chat Button */}
+        <motion.button
+          onClick={() => {
+            if (isChatOpen) {
+              setIsChatOpen(false);
+            } else {
+              setIsChatOpen(true);
+              setHasUnreadMessages(false);
+              // Reset messages to initial state when opening
+              setMessages([{
+                id: '1',
+                text: "👋 Hi! I'm your AI trading assistant. I can help you with stock analysis, portfolio optimization, and market insights. What would you like to know?",
+                sender: 'bot',
+                timestamp: new Date()
+              }]);
+            }
+          }}
+          whileHover={{ scale: 1.05, y: -2 }}
+          whileTap={{ scale: 0.95, y: 2 }}
+          className="relative w-16 h-16 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center justify-center group backdrop-blur-sm cursor-pointer"
+          style={{ 
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            background: 'linear-gradient(135deg, #3B82F6 0%, #8B5CF6 50%, #3B82F6 100%)'
+          }}
+        >
+          <MessageCircle className="h-7 w-7 text-white" />
+          
+          {/* Unread Message Indicator */}
+          {hasUnreadMessages && (
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center shadow-lg"
+            >
+              <span className="text-white text-xs font-bold">3</span>
+            </motion.div>
+          )}
+
+          {/* Pulse Animation */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 rounded-2xl opacity-75"
+            animate={{ 
+              scale: [1, 1.1, 1], 
+              opacity: [0.75, 0, 0.75],
+              rotate: [0, 5, 0]
+            }}
+            transition={{ duration: 3, repeat: Infinity }}
+          />
+        </motion.button>
+      </div>
     </div>
   );
 };
