@@ -50,9 +50,19 @@ interface Invoice {
 
 interface SubscriptionManagerProps {
   className?: string;
+  selectedPlan?: {
+    id: string;
+    name: string;
+    price: number;
+    billingCycle: 'monthly' | 'yearly';
+    features: string[];
+    maxUsers: number;
+    maxData: string;
+    support: string;
+  };
 }
 
-const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({ className = '' }) => {
+const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({ className = '', selectedPlan }) => {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -69,8 +79,24 @@ const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({ className = '
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Mock subscription data
-      const mockSubscription: Subscription = {
+      // Use selectedPlan if provided, otherwise use mock data
+      const mockSubscription: Subscription = selectedPlan ? {
+        id: `sub_${Date.now()}`,
+        planId: selectedPlan.id,
+        planName: selectedPlan.name,
+        status: 'active',
+        currentPeriodStart: new Date(),
+        currentPeriodEnd: new Date(Date.now() + (selectedPlan.billingCycle === 'monthly' ? 30 : 365) * 24 * 60 * 60 * 1000),
+        amount: selectedPlan.price,
+        billingCycle: selectedPlan.billingCycle,
+        nextBillingDate: new Date(Date.now() + (selectedPlan.billingCycle === 'monthly' ? 30 : 365) * 24 * 60 * 60 * 1000),
+        features: selectedPlan.features,
+        limits: {
+          users: selectedPlan.maxUsers,
+          storage: selectedPlan.maxData,
+          messages: selectedPlan.name === 'Starter' ? 100 : selectedPlan.name === 'Professional' ? 1000 : -1
+        }
+      } : {
         id: 'sub_123456789',
         planId: 'pro_monthly',
         planName: 'Professional',
@@ -97,7 +123,16 @@ const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({ className = '
         }
       };
 
-      const mockInvoices: Invoice[] = [
+      const mockInvoices: Invoice[] = selectedPlan ? [
+        {
+          id: `inv_${Date.now()}`,
+          amount: selectedPlan.price,
+          status: 'paid',
+          date: new Date(),
+          description: `${selectedPlan.name} Plan - ${selectedPlan.billingCycle === 'monthly' ? 'Monthly' : 'Yearly'} Subscription`,
+          pdfUrl: '#'
+        }
+      ] : [
         {
           id: 'inv_001',
           amount: 29,
@@ -221,6 +256,27 @@ const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({ className = '
 
   return (
     <div className={`max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 ${className}`}>
+      {/* Success Message for New Subscription */}
+      {selectedPlan && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4"
+        >
+          <div className="flex items-center space-x-3">
+            <CheckCircle className="w-6 h-6 text-green-600" />
+            <div>
+              <h3 className="text-lg font-semibold text-green-800">
+                🎉 Welcome to {selectedPlan.name} Plan!
+              </h3>
+              <p className="text-green-700">
+                Your subscription is now active. You have access to all {selectedPlan.name} features.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Subscription Management</h1>

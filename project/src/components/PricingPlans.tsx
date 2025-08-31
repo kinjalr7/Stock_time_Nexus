@@ -34,11 +34,10 @@ const PricingPlans: React.FC<PricingPlansProps> = ({ onPlanSelect, className = '
       price: billingCycle === 'monthly' ? 9 : 90,
       billingCycle,
       features: [
+        'Basic AI Forecasting',
         'Basic AI Chatbot',
         '100 messages per month',
-        'Email support',
-        'Basic analytics',
-        '1 user account',
+        'Basic Portfolio Tracking',
         'Standard response time'
       ],
       icon: <Zap className="w-6 h-6" />,
@@ -55,12 +54,13 @@ const PricingPlans: React.FC<PricingPlansProps> = ({ onPlanSelect, className = '
       features: [
         'Advanced AI Chatbot',
         '1,000 messages per month',
-        'Priority support',
+        'All Forecasting Models',
         'Advanced analytics',
-        'Up to 5 user accounts',
+        'News Sentiment Analysis',
+        'Auto Trading Simulation',
         'Faster response time',
         'Custom integrations',
-        'API access'
+        'Priority Support'
       ],
       popular: true,
       icon: <Star className="w-6 h-6" />,
@@ -78,14 +78,12 @@ const PricingPlans: React.FC<PricingPlansProps> = ({ onPlanSelect, className = '
         'Premium AI Chatbot',
         'Unlimited messages',
         '24/7 phone support',
-        'Advanced analytics & reporting',
-        'Unlimited user accounts',
+        'Everything in Professional',
+        'Custom Model Training',
         'Instant response time',
-        'Custom integrations',
         'API access',
         'White-label solution',
         'Dedicated account manager',
-        'Custom training data',
         'SLA guarantee'
       ],
       icon: <Crown className="w-6 h-6" />,
