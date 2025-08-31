@@ -133,9 +133,9 @@ const PaymentProcessor: React.FC<PaymentProcessorProps> = ({
           icon: '🎉',
           duration: 4000
         });
-        onSuccess(paymentResult.paymentId);
+        onSuccess(paymentResult.paymentId || 'payment_' + Date.now());
       } else {
-        throw new Error(paymentResult.error);
+        throw new Error(paymentResult.error || 'Payment failed');
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Payment failed');
@@ -192,10 +192,11 @@ const PaymentProcessor: React.FC<PaymentProcessorProps> = ({
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="max-w-md mx-auto bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden"
+      className="max-w-md h-[42rem] bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden flex flex-col"
     >
-      {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6">
+      
+      {/* Fixed Header */}
+      <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6 flex-shrink-0">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-semibold">Complete Payment</h2>
@@ -212,7 +213,8 @@ const PaymentProcessor: React.FC<PaymentProcessorProps> = ({
         </div>
       </div>
 
-      <div className="p-6">
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto p-6">
         {/* Saved Payment Methods */}
         {savedPaymentMethods.length > 0 && (
           <div className="mb-6">
@@ -363,8 +365,30 @@ const PaymentProcessor: React.FC<PaymentProcessorProps> = ({
           </div>
         </div>
 
+        {/* Payment Methods */}
+        <div className="mt-6 text-center">
+          <div className="text-xs text-gray-500 mb-2">We accept</div>
+          <div className="flex items-center justify-center space-x-2">
+            <div className="w-8 h-5 bg-gray-200 rounded flex items-center justify-center">
+              <span className="text-xs font-bold text-gray-600">VISA</span>
+            </div>
+            <div className="w-8 h-5 bg-gray-200 rounded flex items-center justify-center">
+              <span className="text-xs font-bold text-gray-600">MC</span>
+            </div>
+            <div className="w-8 h-5 bg-gray-200 rounded flex items-center justify-center">
+              <span className="text-xs font-bold text-gray-600">AMEX</span>
+            </div>
+            <div className="w-8 h-5 bg-gray-200 rounded flex items-center justify-center">
+              <span className="text-xs font-bold text-gray-600">DISC</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Fixed Footer */}
+      <div className="p-6 border-t border-gray-200 flex-shrink-0">
         {/* Action Buttons */}
-        <div className="mt-6 space-y-3">
+        <div className="space-y-3">
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -393,26 +417,8 @@ const PaymentProcessor: React.FC<PaymentProcessorProps> = ({
             Cancel
           </button>
         </div>
-
-        {/* Payment Methods */}
-        <div className="mt-6 text-center">
-          <div className="text-xs text-gray-500 mb-2">We accept</div>
-          <div className="flex items-center justify-center space-x-2">
-            <div className="w-8 h-5 bg-gray-200 rounded flex items-center justify-center">
-              <span className="text-xs font-bold text-gray-600">VISA</span>
-            </div>
-            <div className="w-8 h-5 bg-gray-200 rounded flex items-center justify-center">
-              <span className="text-xs font-bold text-gray-600">MC</span>
-            </div>
-            <div className="w-8 h-5 bg-gray-200 rounded flex items-center justify-center">
-              <span className="text-xs font-bold text-gray-600">AMEX</span>
-            </div>
-            <div className="w-8 h-5 bg-gray-200 rounded flex items-center justify-center">
-              <span className="text-xs font-bold text-gray-600">DISC</span>
-            </div>
-          </div>
-        </div>
       </div>
+      
     </motion.div>
   );
 };
