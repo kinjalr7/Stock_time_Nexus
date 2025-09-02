@@ -76,6 +76,13 @@ const chatbotResponses = {
       "Welcome! I'm here to help you with stock analysis and trading insights."
     ]
   },
+  website: {
+    patterns: ['website', 'site', 'platform', 'nexus', 'trading platform', 'stock nexus'],
+    responses: [
+      "🌐 **Nexus Stock Trading Platform:**\n\n🎯 **What We Are:**\n• Advanced AI-powered stock trading and analysis platform\n• Professional-grade tools for individual traders and institutions\n• Real-time market data with predictive analytics\n\n🚀 **Platform Highlights:**\n• Modern, responsive web interface\n• Mobile-optimized design\n• Real-time data streaming\n• Interactive dashboards\n• Professional-grade security\n\n💡 **Why Choose Nexus:**\n• 94% AI prediction accuracy\n• Comprehensive feature set\n• Professional support\n• Competitive pricing\n• Continuous innovation",
+      "🏢 **About Our Platform:**\n\nNexus is a cutting-edge AI-powered trading platform that combines:\n• **Machine Learning** - Advanced algorithms for stock prediction\n• **Real-time Data** - Live market feeds and analysis\n• **Professional Tools** - Institutional-grade trading features\n• **User Experience** - Intuitive interface for all skill levels\n\nWe're trusted by traders worldwide for our accuracy and reliability!"
+    ]
+  },
   features: {
     patterns: ['features', 'what can you do', 'capabilities', 'functions', 'help'],
     responses: [
@@ -86,57 +93,79 @@ const chatbotResponses = {
   models: {
     patterns: ['models', 'lstm', 'prophet', 'arima', 'machine learning', 'ai models', 'forecasting'],
     responses: [
-      "📊 Our AI models include:\n• LSTM (Long Short-Term Memory) - Best for time series\n• Prophet - Facebook's forecasting tool\n• ARIMA - Statistical time series analysis\n• BERT - For news sentiment analysis\n\nEach model has different strengths for various market conditions.",
-      "🤖 We use multiple ML models:\n• LSTM: Captures complex patterns in stock data\n• Prophet: Handles seasonality and trends\n• ARIMA: Statistical approach for predictions\n• Ensemble methods for improved accuracy"
+      "📊 **Our Advanced AI Models:**\n\n🧠 **LSTM (Long Short-Term Memory):**\n• Best for complex time series patterns\n• Captures long-term dependencies\n• Handles non-linear relationships\n• 92% accuracy rate\n\n📈 **Prophet (Facebook's Tool):**\n• Excellent for seasonal trends\n• Handles missing data gracefully\n• Holiday and event modeling\n• 89% accuracy rate\n\n📊 **ARIMA (Statistical):**\n• Traditional statistical approach\n• Good for stationary data\n• Econometric modeling\n• 85% accuracy rate\n\n🔤 **BERT (NLP):**\n• News sentiment analysis\n• Market sentiment scoring\n• Text-based predictions\n• 91% accuracy rate\n\n🎯 **Ensemble Methods:**\n• Combines all models\n• 94% overall accuracy\n• Reduces individual model bias\n• Robust predictions",
+      "🤖 **Machine Learning Architecture:**\n\nOur platform uses a sophisticated ensemble of AI models:\n\n• **LSTM Networks** - Deep learning for complex patterns\n• **Prophet** - Facebook's time series forecasting\n• **ARIMA** - Statistical time series analysis\n• **BERT** - Natural language processing for news\n• **Ensemble Methods** - Combines all models for best results\n\nEach model specializes in different market conditions, ensuring accurate predictions across various scenarios."
     ]
   },
   pricing: {
     patterns: ['price', 'cost', 'pricing', 'subscription', 'plan', 'free', 'paid'],
     responses: [
-      "💰 Our pricing plans:\n• Starter: Free (basic features)\n• Professional: $99/month (advanced features)\n• Enterprise: $299/month (full solution)\n\nAll plans include AI predictions and basic analytics.",
-      "💳 Pricing options:\n• Free tier: 5 predictions/day\n• Pro: Unlimited predictions + auto-trading\n• Enterprise: Custom models + API access"
+      "💰 **Our Transparent Pricing Plans:**\n\n🚀 **Starter Plan - $9/month:**\n• Basic AI forecasting models\n• 100 messages per month\n• Email support\n• Basic analytics\n• 1 user account\n• Standard response time\n• 1GB storage\n\n⭐ **Professional Plan - $29/month (Most Popular):**\n• All AI forecasting models\n• 1,000 messages per month\n• Priority support\n• Advanced analytics\n• Up to 5 user accounts\n• Faster response time\n• Custom integrations\n• API access\n• 10GB storage\n\n👑 **Enterprise Plan - $99/month:**\n• Unlimited messages\n• 24/7 phone support\n• Advanced analytics & reporting\n• Unlimited user accounts\n• Instant response time\n• Custom integrations\n• API access\n• White-label solution\n• Dedicated account manager\n• Custom training data\n• SLA guarantee\n• Unlimited storage\n\n💡 **All plans include:**\n• 14-day free trial\n• 30-day money-back guarantee\n• SSL security\n• 99.9% uptime guarantee",
+      "💳 **Pricing & Value:**\n\nOur plans are designed to scale with your needs:\n\n• **Starter ($9/month)** - Perfect for individual traders\n• **Professional ($29/month)** - Ideal for serious traders and small teams\n• **Enterprise ($99/month)** - Complete solution for institutions\n\n🎁 **Special Offers:**\n• **Yearly billing** - Save 17% (2 months free)\n• **Free trial** - 14 days, no credit card required\n• **Money-back guarantee** - 30-day satisfaction guarantee\n\n💎 **Why Our Pricing is Fair:**\n• Professional-grade AI models\n• Institutional-level features\n• 24/7 support on higher plans\n• Continuous platform updates\n• No hidden fees or setup costs"
     ]
   },
   portfolio: {
     patterns: ['portfolio', 'investment', 'stocks', 'holdings', 'assets'],
     responses: [
-      "📈 Portfolio features:\n• Real-time tracking of your investments\n• Performance analytics and metrics\n• Risk assessment and diversification\n• AI-powered rebalancing suggestions\n• Historical performance analysis",
-      "💼 Your portfolio management:\n• Track multiple stocks and assets\n• Get AI-driven investment recommendations\n• Monitor performance with advanced charts\n• Receive alerts for optimal trading times"
+      "📈 **Advanced Portfolio Management:**\n\n🔍 **Real-time Tracking:**\n• Live portfolio value updates\n• Individual stock performance\n• Sector allocation analysis\n• Market cap distribution\n• Dividend tracking\n\n📊 **Performance Analytics:**\n• Total return calculations\n• Risk-adjusted returns (Sharpe ratio)\n• Benchmark comparisons\n• Drawdown analysis\n• Volatility metrics\n\n⚖️ **Risk Management:**\n• Portfolio diversification scoring\n• Correlation analysis\n• Sector concentration alerts\n• Position sizing recommendations\n• Stop-loss suggestions\n\n🤖 **AI-Powered Insights:**\n• Automated rebalancing alerts\n• Optimal asset allocation\n• Risk assessment scoring\n• Performance forecasting\n• Market timing suggestions\n\n📈 **Historical Analysis:**\n• Performance over time\n• Rolling returns analysis\n• Risk metrics tracking\n• Comparison with market indices",
+      "💼 **Portfolio Features Overview:**\n\nOur portfolio management system provides:\n\n• **Multi-asset Support** - Stocks, ETFs, bonds, and more\n• **Real-time Updates** - Live market data integration\n• **Advanced Analytics** - Professional-grade metrics\n• **AI Recommendations** - Data-driven insights\n• **Risk Assessment** - Comprehensive risk analysis\n• **Performance Tracking** - Detailed historical data\n• **Alert System** - Custom notifications\n• **Mobile Access** - Trade anywhere, anytime"
     ]
   },
   trading: {
     patterns: ['trading', 'buy', 'sell', 'trade', 'automated', 'auto trading'],
     responses: [
-      "⚡ Trading features:\n• Automated trading simulation\n• Real-time market data\n• AI-powered buy/sell signals\n• Risk management tools\n• Performance tracking and analytics",
-      "🎯 Smart trading capabilities:\n• Automated strategy execution\n• Real-time market monitoring\n• AI-generated trading signals\n• Portfolio rebalancing\n• Risk assessment and alerts"
+      "⚡ **Professional Trading Features:**\n\n🤖 **Automated Trading:**\n• Strategy backtesting\n• Paper trading simulation\n• Automated order execution\n• Risk management rules\n• Performance tracking\n\n📊 **Real-time Market Data:**\n• Live price feeds\n• Level 2 market data\n• Volume analysis\n• Order book visibility\n• Market depth information\n\n🎯 **AI Trading Signals:**\n• Buy/sell recommendations\n• Entry/exit timing\n• Position sizing suggestions\n• Risk assessment\n• Market sentiment analysis\n\n🛡️ **Risk Management:**\n• Stop-loss orders\n• Take-profit levels\n• Position sizing rules\n• Portfolio heat maps\n• Correlation alerts\n\n📈 **Performance Analytics:**\n• Trade history tracking\n• Win/loss ratios\n• Average returns\n• Risk metrics\n• Strategy performance",
+      "🎯 **Smart Trading Capabilities:**\n\nOur platform offers institutional-grade trading tools:\n\n• **Automated Execution** - Set rules and let AI trade\n• **Real-time Monitoring** - Live market surveillance\n• **Signal Generation** - AI-powered trade recommendations\n• **Risk Controls** - Built-in safety mechanisms\n• **Performance Tracking** - Comprehensive analytics\n• **Strategy Testing** - Backtest before live trading\n• **Mobile Trading** - Trade on any device\n• **API Access** - Connect your own tools"
     ]
   },
   accuracy: {
     patterns: ['accuracy', 'precision', 'reliable', 'trust', 'performance', 'how accurate'],
     responses: [
-      "🎯 Our AI models achieve:\n• 94% overall accuracy rate\n• 87% precision in trend prediction\n• 91% recall in market movements\n• Continuous learning and improvement\n• Backtested on historical data",
-      "📊 Model performance:\n• LSTM: 92% accuracy\n• Prophet: 89% accuracy\n• ARIMA: 85% accuracy\n• Ensemble: 94% accuracy\n\nResults vary by market conditions."
+      "🎯 **Proven AI Accuracy:**\n\n📊 **Overall Performance:**\n• **94% overall accuracy rate** across all models\n• **87% precision** in trend prediction\n• **91% recall** in market movements\n• **89% F1-score** for balanced performance\n\n🤖 **Individual Model Accuracy:**\n• **LSTM Networks:** 92% accuracy\n• **Prophet Model:** 89% accuracy\n• **ARIMA Statistical:** 85% accuracy\n• **BERT NLP:** 91% accuracy\n• **Ensemble Combined:** 94% accuracy\n\n📈 **Performance Metrics:**\n• **Backtesting:** 5+ years of historical data\n• **Live Trading:** Real-time performance tracking\n• **Continuous Learning:** Models improve over time\n• **Market Adaptation:** Adjusts to changing conditions\n• **Risk Management:** Built-in accuracy thresholds",
+      "📊 **Model Performance & Reliability:**\n\nOur AI models are rigorously tested and validated:\n\n• **Historical Backtesting** - Tested on 5+ years of market data\n• **Cross-validation** - Multiple time periods and market conditions\n• **Live Performance** - Real-time accuracy monitoring\n• **Risk Controls** - Automatic adjustments for accuracy drops\n• **Continuous Training** - Models learn from new data\n• **Market Adaptation** - Adjusts to changing market conditions\n\n💡 **Why Our Accuracy is High:**\n• Ensemble methods reduce individual model bias\n• Multiple data sources for comprehensive analysis\n• Real-time market sentiment integration\n• Advanced feature engineering\n• Professional-grade model architecture"
     ]
   },
   news: {
     patterns: ['news', 'sentiment', 'analysis', 'market news', 'financial news'],
     responses: [
-      "📰 News analysis features:\n• Real-time financial news monitoring\n• BERT-based sentiment analysis\n• Impact assessment on stocks\n• News-driven trading signals\n• Market sentiment tracking",
-      "🔍 News sentiment capabilities:\n• Analyze thousands of news sources\n• Calculate sentiment scores\n• Predict market reactions\n• Generate news-based alerts\n• Historical sentiment trends"
+      "📰 **Advanced News Analysis System:**\n\n🔍 **Real-time Monitoring:**\n• 24/7 financial news scanning\n• 1000+ news sources monitored\n• Real-time sentiment scoring\n• Breaking news alerts\n• Market impact assessment\n\n🤖 **BERT AI Sentiment Analysis:**\n• Natural language processing\n• Context-aware sentiment scoring\n• Multi-language support\n• Emotion detection\n• Sentiment trend analysis\n\n📊 **Market Impact Analysis:**\n• Stock-specific news correlation\n• Sector-wide sentiment tracking\n• Market reaction prediction\n• Volatility impact assessment\n• Trading signal generation\n\n⚡ **News-Driven Features:**\n• Automated news alerts\n• Sentiment-based trading signals\n• News impact scoring\n• Historical sentiment trends\n• Market sentiment dashboard",
+      "🔍 **News Sentiment Capabilities:**\n\nOur platform analyzes thousands of news sources in real-time:\n\n• **Source Coverage** - Major financial news outlets, social media, press releases\n• **Sentiment Scoring** - AI-powered positive/negative/neutral classification\n• **Impact Analysis** - How news affects specific stocks and sectors\n• **Signal Generation** - Trading recommendations based on news sentiment\n• **Trend Tracking** - Sentiment changes over time\n• **Alert System** - Notifications for significant news events\n• **Historical Data** - Sentiment analysis archives\n• **Custom Filters** - Focus on specific companies or sectors"
     ]
   },
   support: {
     patterns: ['support', 'help', 'contact', 'customer service', 'assistance'],
     responses: [
-      "🛠️ Need help?\n• Email: support@nexus-trading.com\n• Live chat: Available 24/7\n• Documentation: Comprehensive guides\n• Community: Join our trading forum\n• Priority support for Pro users",
-      "💬 Support options:\n• 24/7 AI assistant (me!)\n• Human support team\n• Video tutorials and guides\n• Community discussions\n• One-on-one consultations"
+      "🛠️ **24/7 Support Available:**\n\n📧 **Email Support:**\n• support@nexus-trading.com\n• Response within 4 hours\n• Technical issue resolution\n• Account management help\n\n💬 **Live Chat Support:**\n• Available 24/7\n• Instant responses\n• Real-time problem solving\n• Priority queue for Pro users\n\n📚 **Documentation & Resources:**\n• Comprehensive user guides\n• Video tutorials\n• API documentation\n• Best practices guides\n• FAQ database\n\n👥 **Community Support:**\n• Active trading forum\n• User discussions\n• Strategy sharing\n• Peer-to-peer help\n• Expert Q&A sessions\n\n🎯 **Priority Support (Pro/Enterprise):**\n• Dedicated support team\n• Faster response times\n• Phone support available\n• One-on-one consultations",
+      "💬 **Support Options & Resources:**\n\nOur comprehensive support system includes:\n\n• **AI Assistant (24/7)** - Instant help for common questions\n• **Human Support Team** - Expert assistance for complex issues\n• **Video Tutorials** - Step-by-step platform guides\n• **Community Forum** - Connect with other traders\n• **One-on-One Sessions** - Personalized training for Enterprise users\n• **Knowledge Base** - Searchable help articles\n• **API Support** - Technical assistance for developers\n• **Training Webinars** - Regular educational sessions"
+    ]
+  },
+  security: {
+    patterns: ['security', 'safe', 'secure', 'privacy', 'data protection', 'encryption'],
+    responses: [
+      "🔒 **Enterprise-Grade Security:**\n\n🛡️ **Data Protection:**\n• Bank-level SSL encryption\n• PCI DSS compliance\n• SOC 2 Type II certified\n• GDPR compliant\n• Regular security audits\n\n🔐 **Account Security:**\n• Two-factor authentication (2FA)\n• Biometric login support\n• Session management\n• IP whitelisting\n• Suspicious activity detection\n\n💳 **Payment Security:**\n• Stripe-powered payments\n• Encrypted payment data\n• No card storage on servers\n• Fraud detection systems\n• Secure payment processing\n\n📊 **Data Privacy:**\n• User data encryption\n• Anonymous analytics\n• Data retention policies\n• User consent management\n• Right to data deletion",
+      "🛡️ **Security & Privacy Features:**\n\nOur platform implements industry-leading security measures:\n\n• **SSL Encryption** - Bank-level data protection\n• **PCI Compliance** - Secure payment processing\n• **SOC 2 Certification** - Industry security standards\n• **GDPR Compliance** - European data protection\n• **Regular Audits** - Continuous security monitoring\n• **2FA Support** - Enhanced account protection\n• **Data Encryption** - All data encrypted at rest and in transit\n• **Privacy Controls** - User-managed data preferences"
+    ]
+  },
+  technology: {
+    patterns: ['technology', 'tech', 'architecture', 'infrastructure', 'backend', 'frontend'],
+    responses: [
+      "⚙️ **Advanced Technology Stack:**\n\n🖥️ **Frontend Technology:**\n• React 18 with TypeScript\n• Framer Motion animations\n• Tailwind CSS styling\n• Responsive design\n• Progressive Web App (PWA)\n\n🔧 **Backend Infrastructure:**\n• Node.js/Express servers\n• Python ML services\n• Real-time WebSocket connections\n• RESTful API architecture\n• Microservices design\n\n🤖 **AI/ML Infrastructure:**\n• TensorFlow/PyTorch models\n• GPU-accelerated computing\n• Real-time data processing\n• Model versioning system\n• A/B testing framework\n\n☁️ **Cloud Infrastructure:**\n• AWS/Google Cloud hosting\n• Auto-scaling capabilities\n• 99.9% uptime guarantee\n• Global CDN distribution\n• Real-time monitoring",
+      "🔬 **Technical Architecture:**\n\nOur platform is built with modern, scalable technology:\n\n• **Frontend** - React, TypeScript, Tailwind CSS\n• **Backend** - Node.js, Python, microservices\n• **AI/ML** - TensorFlow, PyTorch, real-time processing\n• **Database** - PostgreSQL, Redis, MongoDB\n• **Cloud** - AWS/Google Cloud with auto-scaling\n• **Security** - SSL, 2FA, encryption, compliance\n• **Performance** - CDN, caching, optimization\n• **Monitoring** - Real-time alerts, analytics, logging"
+    ]
+  },
+  comparison: {
+    patterns: ['compare', 'vs', 'better than', 'competitors', 'alternative', 'difference'],
+    responses: [
+      "🏆 **Why Nexus Stands Out:**\n\n🎯 **AI Superiority:**\n• 94% accuracy vs industry average 70-80%\n• Multiple AI models vs single model approach\n• Real-time sentiment analysis vs delayed data\n• Continuous learning vs static models\n\n📊 **Feature Comparison:**\n• **Nexus:** All-in-one platform\n• **Others:** Separate tools for different functions\n• **Nexus:** Real-time data + AI predictions\n• **Others:** Historical data only\n• **Nexus:** Integrated portfolio management\n• **Others:** Basic tracking only\n\n💰 **Value Proposition:**\n• Professional features at affordable prices\n• No hidden fees or setup costs\n• 14-day free trial\n• 30-day money-back guarantee\n• Transparent pricing\n\n🚀 **Innovation:**\n• Latest AI/ML technology\n• Regular platform updates\n• User-driven feature development\n• Community feedback integration",
+      "⚖️ **Competitive Advantages:**\n\nOur platform offers unique benefits:\n\n• **AI Accuracy** - 94% vs industry average 70-80%\n• **Integration** - All tools in one platform vs separate apps\n• **Real-time Data** - Live updates vs delayed information\n• **User Experience** - Modern interface vs outdated designs\n• **Support** - 24/7 AI + human support vs limited help\n• **Pricing** - Transparent plans vs hidden costs\n• **Innovation** - Continuous updates vs stagnant platforms\n• **Community** - Active user forum vs isolated experience"
     ]
   },
   default: {
     responses: [
-      "I'm not sure about that. Could you rephrase your question? I can help with trading, AI models, portfolio management, and platform features.",
-      "Let me help you with something else. I'm knowledgeable about stock predictions, trading strategies, and our platform features.",
-      "I'd be happy to help! Try asking about our AI models, trading features, portfolio management, or pricing plans."
+      "I'm not sure about that. Could you rephrase your question? I can help with trading, AI models, portfolio management, platform features, pricing, security, technology, and more.",
+      "Let me help you with something else. I'm knowledgeable about stock predictions, trading strategies, platform features, security, technology, and our comprehensive trading solution.",
+      "I'd be happy to help! Try asking about our AI models, trading features, portfolio management, pricing plans, security, technology, or how we compare to competitors.",
+      "I can help you with many topics! Ask me about:\n• 🚀 Platform features and capabilities\n• 🤖 AI models and accuracy\n• 💰 Pricing plans and value\n• 📈 Trading and portfolio tools\n• 🔒 Security and privacy\n• ⚙️ Technology and architecture\n• 🆚 How we compare to others\n• 🛠️ Support and help options"
     ]
   }
 };
@@ -188,6 +217,26 @@ const getChatbotResponse = (userMessage: string): string => {
   // Check for support
   if (chatbotResponses.support.patterns.some(pattern => message.includes(pattern))) {
     return chatbotResponses.support.responses[Math.floor(Math.random() * chatbotResponses.support.responses.length)];
+  }
+  
+  // Check for security
+  if (chatbotResponses.security.patterns.some(pattern => message.includes(pattern))) {
+    return chatbotResponses.security.responses[Math.floor(Math.random() * chatbotResponses.security.responses.length)];
+  }
+  
+  // Check for technology
+  if (chatbotResponses.technology.patterns.some(pattern => message.includes(pattern))) {
+    return chatbotResponses.technology.responses[Math.floor(Math.random() * chatbotResponses.technology.responses.length)];
+  }
+  
+  // Check for comparison
+  if (chatbotResponses.comparison.patterns.some(pattern => message.includes(pattern))) {
+    return chatbotResponses.comparison.responses[Math.floor(Math.random() * chatbotResponses.comparison.responses.length)];
+  }
+  
+  // Check for website
+  if (chatbotResponses.website.patterns.some(pattern => message.includes(pattern))) {
+    return chatbotResponses.website.responses[Math.floor(Math.random() * chatbotResponses.website.responses.length)];
   }
   
   // Default response
@@ -270,7 +319,11 @@ const Home: React.FC = () => {
     { text: "What features do you offer?", icon: "🚀" },
     { text: "How accurate are your models?", icon: "📊" },
     { text: "Tell me about pricing", icon: "💰" },
-    { text: "How does trading work?", icon: "⚡" }
+    { text: "How does trading work?", icon: "⚡" },
+    { text: "What makes Nexus special?", icon: "🏆" },
+    { text: "Is my data secure?", icon: "🔒" },
+    { text: "What technology do you use?", icon: "⚙️" },
+    { text: "Tell me about your platform", icon: "🌐" }
   ];
 
   const handleQuickAction = (text: string) => {
@@ -1070,12 +1123,12 @@ const Home: React.FC = () => {
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    placeholder="Ask me anything about trading..."
+                    placeholder="     Ask me anything "
                     className="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
                   />
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                     <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs">⌘</span>
+                      <span className="text-white text-xs"></span>
                     </div>
                   </div>
                 </div>
