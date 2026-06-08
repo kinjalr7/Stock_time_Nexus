@@ -260,6 +260,8 @@ const Dashboard: React.FC = () => {
     getStockBySymbol,
     setSelectedStock,
     popularStocks,
+    dataSource,
+    lastUpdated,
   } = useStockData();
 
   const [activeTab, setActiveTab] = useState<ChartTab>('candlestick');
@@ -466,8 +468,32 @@ const Dashboard: React.FC = () => {
               </span>
             </h1>
             <p className="text-gray-500 dark:text-slate-400 text-sm mt-1 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 pulse-dot" />
-              Live market data · AI-powered predictions · Real-time analytics
+              {dataSource === 'finnhub-realtime' ? (
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs font-bold border border-emerald-200 dark:border-emerald-500/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 pulse-dot" />
+                  LIVE
+                </span>
+              ) : dataSource === 'yfinance-delayed' ? (
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 text-xs font-bold border border-amber-200 dark:border-amber-500/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                  15-MIN DELAYED
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-slate-400 text-xs font-semibold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-gray-400 pulse-dot" />
+                  Connecting...
+                </span>
+              )}
+              <span className="text-gray-400 dark:text-slate-500">·</span>
+              AI-powered predictions
+              {lastUpdated && (
+                <>
+                  <span className="text-gray-400 dark:text-slate-500">·</span>
+                  <span className="text-xs text-gray-400 dark:text-slate-500">
+                    Updated {lastUpdated.toLocaleTimeString()}
+                  </span>
+                </>
+              )}
             </p>
           </div>
 

@@ -240,6 +240,8 @@ export const useStockData = () => {
   const [loading, setLoading] = useState(false);
   const [selectedStock, setSelectedStock] = useState<string>('AAPL');
   const [forecasts, setForecasts] = useState<Record<string, StockForecast>>({});
+  const [dataSource, setDataSource] = useState<'finnhub-realtime' | 'yfinance-delayed' | 'unknown'>('unknown');
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const popularStocks = [
     'AAPL', 'TSLA', 'GOOGL', 'MSFT', 'AMZN', 'META', 'NVDA', 'NFLX',
@@ -273,10 +275,15 @@ export const useStockData = () => {
       // Overlay detailed data for selected stock
       if (detailRes?.data) {
         stockDataMap[selectedStock] = quoteToStockData(detailRes.data);
+        // Track data source from the API response
+        const src = detailRes.data.dataSource;
+        if (src === 'finnhub-realtime') setDataSource('finnhub-realtime');
+        else if (src === 'yfinance-delayed') setDataSource('yfinance-delayed');
       }
 
       const stockList = Object.values(stockDataMap);
       setStocks(stockList);
+      setLastUpdated(new Date());
 
       // Build forecasts
       const newForecasts: Record<string, StockForecast> = {};
@@ -299,6 +306,35 @@ export const useStockData = () => {
       console.error('[useStockData] fetch error:', error);
     } finally {
       setLoading(false);
+    }
+  }, [selectedStock]);
+
+  // ── Live price polling (every 15s) ─────────────────────────────────────────
+  const pollLivePrice = useCallback(async () => {
+    if (!selectedStock) return;
+    try {
+      const res = await axios.get(`${API_BASE}/api/stocks/live-price/${selectedStock}`);
+      const live = res.data;
+      if (!live?.price) return;
+
+      setDataSource(live.dataSource === 'finnhub-realtime' ? 'finnhub-realtime' : 'yfinance-delayed');
+      setLastUpdated(new Date());
+
+      // Patch the price in stocks state without refetching history
+      setStocks((prev) =>
+        prev.map((s) =>
+          s.symbol === selectedStock
+            ? {
+                ...s,
+                price:         live.price,
+                change:        live.change,
+                changePercent: live.changePercent,
+              }
+            : s
+        )
+      );
+    } catch (e) {
+      // silent — fallback data still shown
     }
   }, [selectedStock]);
 
@@ -329,12 +365,18 @@ export const useStockData = () => {
 
   const getForecastBySymbol = (symbol: string) => forecasts[symbol];
 
-  // Initial load + auto-refresh every 60s (full quotes are slow)
+  // Initial full load + refresh every 60s
   useEffect(() => {
     fetchStockData();
     const interval = setInterval(() => fetchStockData(), 60000);
     return () => clearInterval(interval);
   }, [fetchStockData]);
+
+  // Live price micro-poll every 15s
+  useEffect(() => {
+    const interval = setInterval(() => pollLivePrice(), 15000);
+    return () => clearInterval(interval);
+  }, [pollLivePrice]);
 
   return {
     stocks,
@@ -343,6 +385,8 @@ export const useStockData = () => {
     selectedStock,
     forecasts,
     popularStocks,
+    dataSource,
+    lastUpdated,
     fetchStockData,
     searchStock,
     getStockBySymbol,
