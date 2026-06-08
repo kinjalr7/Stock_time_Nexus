@@ -145,14 +145,20 @@ const News: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 pt-20 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen bg-slate-50/50 dark:bg-slate-950 pt-20 pb-8 overflow-hidden">
+      {/* Abstract Glowing Decorative Elements */}
+      <div className="gradient-blob bg-blue-400 dark:bg-blue-600 top-20 -left-40"></div>
+      <div className="gradient-blob bg-purple-400 dark:bg-purple-600 bottom-10 -right-40"></div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-8 animate-fade-in">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">News Sentiment Analysis</h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                <span className="text-gradient-primary">News Sentiment Analysis</span>
+              </h1>
+              <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mt-2 max-w-2xl">
                 Real-time financial news with AI-powered sentiment scoring and market impact assessment.
               </p>
             </div>
@@ -160,7 +166,7 @@ const News: React.FC = () => {
               <button
                 onClick={loadNews}
                 disabled={newsLoading}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center disabled:opacity-50"
+                className="px-5 py-2.5 bg-blue-600 dark:bg-blue-500 text-white rounded-2xl hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-300 font-semibold text-sm flex items-center shadow-lg shadow-blue-500/20 hover:shadow-blue-500/35 active:scale-95 disabled:opacity-50"
               >
                 <RefreshCw className={`h-4 w-4 mr-2 ${newsLoading ? 'animate-spin' : ''}`} />
                 Refresh News
@@ -179,10 +185,10 @@ const News: React.FC = () => {
 
 
         {/* Filters */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6 mb-8">
+        <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 mb-8 shadow-xl hover-card-trigger transition-all duration-300 animate-fade-in">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Search</label>
+              <label className="block text-sm font-semibold text-slate-500 dark:text-slate-400 mb-2">Search</label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
@@ -190,17 +196,17 @@ const News: React.FC = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search news..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
+                  className="w-full pl-10 pr-4 py-2.5 bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-2xl text-sm font-semibold text-slate-700 dark:text-slate-200 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                 />
               </div>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sentiment</label>
+              <label className="block text-sm font-semibold text-slate-500 dark:text-slate-400 mb-2">Sentiment</label>
               <select
                 value={selectedSentiment}
                 onChange={(e) => setSelectedSentiment(e.target.value as any)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
+                className="w-full px-3 py-2.5 bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-2xl text-sm font-semibold text-slate-700 dark:text-slate-200 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all cursor-pointer"
               >
                 <option value="all">All Sentiments</option>
                 <option value="positive">Positive</option>
@@ -210,11 +216,11 @@ const News: React.FC = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Source</label>
+              <label className="block text-sm font-semibold text-slate-500 dark:text-slate-400 mb-2">Source</label>
               <select
                 value={selectedSource}
                 onChange={(e) => setSelectedSource(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
+                className="w-full px-3 py-2.5 bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-2xl text-sm font-semibold text-slate-700 dark:text-slate-200 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all cursor-pointer"
               >
                 <option value="all">All Sources</option>
                 {sources.map(source => (
@@ -224,11 +230,11 @@ const News: React.FC = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Symbol</label>
+              <label className="block text-sm font-semibold text-slate-500 dark:text-slate-400 mb-2">Symbol</label>
               <select
                 value={selectedSymbol}
                 onChange={(e) => setSelectedSymbol(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
+                className="w-full px-3 py-2.5 bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-2xl text-sm font-semibold text-slate-700 dark:text-slate-200 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all cursor-pointer"
               >
                 <option value="all">All Symbols</option>
                 {symbols.map(symbol => (
@@ -245,7 +251,7 @@ const News: React.FC = () => {
                   setSearchQuery('');
                   setSelectedSymbol('all');
                 }}
-                className="w-full px-4 py-2 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors"
+                className="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-350 rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors font-semibold text-sm shadow-sm"
               >
                 Clear Filters
               </button>
@@ -256,10 +262,10 @@ const News: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* News Feed */}
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
-              <div className="p-6 border-b border-gray-200 dark:border-slate-700">
+            <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-xl overflow-hidden animate-fade-in-up">
+              <div className="p-6 border-b border-slate-100 dark:border-slate-800/85">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Latest Financial News</h2>
+                  <h2 className="text-xl font-bold text-slate-905 dark:text-white">Latest Financial News</h2>
                   <span className="text-sm text-gray-600 dark:text-gray-400">
                     {filteredNews.length} articles
                   </span>
@@ -294,7 +300,7 @@ const News: React.FC = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: Math.min(index * 0.05, 0.5) }}
-                        className="p-4 border border-gray-200 dark:border-slate-700 rounded-xl hover:shadow-md transition-shadow"
+                        className="p-4 bg-white/30 dark:bg-slate-900/20 border border-slate-100 dark:border-slate-800/40 rounded-2xl hover-card-trigger transition-all duration-300 shadow-sm"
                       >
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center space-x-2 flex-wrap gap-y-1">
@@ -375,8 +381,8 @@ const News: React.FC = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Sentiment Overview */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sentiment Distribution</h3>
+            <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 shadow-xl animate-fade-in-up">
+              <h3 className="text-lg font-bold text-slate-905 dark:text-white mb-4">Sentiment Distribution</h3>
               
               <div className="h-48 mb-4">
                 <ResponsiveContainer width="100%" height="100%">
@@ -416,8 +422,8 @@ const News: React.FC = () => {
             </div>
 
             {/* Sentiment Trend */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">7-Day Sentiment Trend</h3>
+            <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 shadow-xl">
+              <h3 className="text-lg font-bold text-slate-905 dark:text-white mb-4">7-Day Sentiment Trend</h3>
               
               <div className="h-48">
                 <ResponsiveContainer width="100%" height="100%">
@@ -456,12 +462,12 @@ const News: React.FC = () => {
             </div>
 
             {/* Market Impact */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Market Impact Analysis</h3>
+            <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 shadow-xl">
+              <h3 className="text-lg font-bold text-slate-905 dark:text-white mb-4">Market Impact Analysis</h3>
               
               <div className="space-y-4">
                 {marketImpact.map((stock) => (
-                  <div key={stock.symbol} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-700 rounded-lg">
+                  <div key={stock.symbol} className="flex items-center justify-between p-4 bg-white/30 dark:bg-slate-900/20 border border-slate-100/50 dark:border-slate-800/40 rounded-2xl hover-card-trigger transition-all duration-300 shadow-sm">
                     <div>
                       <div className="font-medium text-gray-900 dark:text-white">{stock.symbol}</div>
                       <div className="flex items-center space-x-2">
@@ -484,34 +490,34 @@ const News: React.FC = () => {
             </div>
 
             {/* AI Insights */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">AI Insights</h3>
+            <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 shadow-xl">
+              <h3 className="text-lg font-bold text-slate-905 dark:text-white mb-4">AI Insights</h3>
               
               <div className="space-y-4">
-                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <div className="p-3.5 bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100/50 dark:border-blue-900/30 rounded-2xl shadow-sm">
                   <div className="flex items-center mb-2">
                     <CheckCircle className="h-4 w-4 text-blue-600 mr-2" />
-                    <span className="text-sm font-medium text-blue-800 dark:text-blue-200">Bullish Sentiment</span>
+                    <span className="text-sm font-bold text-blue-800 dark:text-blue-200">Bullish Sentiment</span>
                   </div>
                   <p className="text-xs text-blue-700 dark:text-blue-300">
                     Tech stocks showing strong positive sentiment with 68% bullish news coverage.
                   </p>
                 </div>
                 
-                <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                <div className="p-3.5 bg-yellow-50/50 dark:bg-yellow-950/20 border border-yellow-100/50 dark:border-yellow-900/30 rounded-2xl shadow-sm">
                   <div className="flex items-center mb-2">
                     <AlertCircle className="h-4 w-4 text-yellow-600 mr-2" />
-                    <span className="text-sm font-medium text-yellow-800 dark:text-yellow-200">Market Volatility</span>
+                    <span className="text-sm font-bold text-yellow-800 dark:text-yellow-200">Market Volatility</span>
                   </div>
                   <p className="text-xs text-yellow-700 dark:text-yellow-300">
                     Increased news volume may indicate higher volatility in the coming sessions.
                   </p>
                 </div>
                 
-                <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <div className="p-3.5 bg-green-50/50 dark:bg-green-950/20 border border-green-100/50 dark:border-green-900/30 rounded-2xl shadow-sm">
                   <div className="flex items-center mb-2">
                     <TrendingUp className="h-4 w-4 text-green-600 mr-2" />
-                    <span className="text-sm font-medium text-green-800 dark:text-green-200">Sector Rotation</span>
+                    <span className="text-sm font-bold text-green-800 dark:text-green-200">Sector Rotation</span>
                   </div>
                   <p className="text-xs text-green-700 dark:text-green-300">
                     EV sector gaining momentum with 82% positive sentiment score.

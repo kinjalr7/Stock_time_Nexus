@@ -150,7 +150,11 @@ const Dashboard: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 pt-20 pb-8">
+    <div className="relative min-h-screen bg-slate-50/50 dark:bg-slate-950 pt-20 pb-8 overflow-hidden">
+      {/* Abstract Glowing Decorative Elements */}
+      <div className="gradient-blob bg-blue-400 dark:bg-blue-600 top-20 -left-40"></div>
+      <div className="gradient-blob bg-purple-400 dark:bg-purple-600 bottom-10 -right-40"></div>
+      
       {/* Inject marquee style */}
       <style>{`
 @keyframes marquee {
@@ -165,37 +169,37 @@ const Dashboard: React.FC = () => {
 }
 `}</style>
       {/* Stock Headlines Ticker */}
-      <div className="w-full bg-blue-50 dark:bg-blue-900/30 py-2 px-4 mb-6 rounded-xl overflow-x-hidden whitespace-nowrap border border-blue-100 dark:border-blue-800 relative">
+      <div className="w-full bg-blue-50/50 dark:bg-blue-900/10 py-3 px-4 mb-6 rounded-2xl overflow-x-hidden whitespace-nowrap border border-blue-100/50 dark:border-blue-800/30 backdrop-blur-md relative">
         <div className="animate-marquee" style={{ minWidth: '200%' }}>
           {[...stockHeadlines, ...stockHeadlines].map((item, idx) => (
             <div key={idx} className="flex items-center gap-2 min-w-max mr-8">
-              <span className="font-bold text-blue-700 dark:text-blue-300">{item.symbol}</span>
-              <span className="text-gray-700 dark:text-blue-100 text-sm">{item.headline}</span>
+              <span className="font-bold text-blue-700 dark:text-blue-400">{item.symbol}</span>
+              <span className="text-slate-650 dark:text-slate-300 text-sm font-medium">{item.headline}</span>
             </div>
           ))}
         </div>
       </div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Interactive Forecast Dashboard
+        <div className="mb-8 animate-fade-in">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            <span className="text-gradient-primary">Interactive Forecast Dashboard</span>
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Compare ML models to predict stock prices.
+          <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mt-2 max-w-2xl">
+            Compare machine learning models side-by-side to predict stock prices with historical context.
           </p>
         </div>
 
         {/* Controls */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-          <div className="lg:col-span-3 bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <div className="lg:col-span-3 glass-panel rounded-3xl p-6 shadow-xl border border-slate-200/50 dark:border-slate-800/80 hover-card-trigger transition-all duration-300">
+            <h3 className="text-lg font-bold text-slate-905 dark:text-white mb-4">
               Forecasting Controls
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Stock
+                <label className="block text-sm font-semibold text-slate-500 dark:text-slate-400 mb-2">
+                  Stock Symbol
                 </label>
                 <StockSearch
                   onSearch={handleStockSearch}
@@ -204,13 +208,13 @@ const Dashboard: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-semibold text-slate-500 dark:text-slate-400 mb-2">
                   Forecast Horizon
                 </label>
                 <select
                   value={forecastHorizon}
                   onChange={(e) => setForecastHorizon(Number(e.target.value))}
-                  className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white"
+                  className="w-full px-4 py-2.5 bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-2xl text-sm font-semibold text-slate-700 dark:text-slate-200 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all cursor-pointer"
                 >
                   <option value={7}>7 Days</option>
                   <option value={30}>30 Days</option>
@@ -222,7 +226,7 @@ const Dashboard: React.FC = () => {
                 <button
                   onClick={generateForecasts}
                   disabled={isGenerating || !currentStockData}
-                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center disabled:opacity-50"
+                  className="w-full px-5 py-2.5 bg-blue-600 dark:bg-blue-500 text-white rounded-2xl hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-300 font-semibold text-sm flex items-center justify-center shadow-lg shadow-blue-500/20 hover:shadow-blue-500/35 active:scale-95 disabled:opacity-50"
                 >
                   {isGenerating ? (
                     <>
@@ -239,8 +243,8 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <div className="glass-panel rounded-3xl p-6 shadow-xl border border-slate-200/50 dark:border-slate-800/80 hover-card-trigger transition-all duration-300">
+            <h3 className="text-lg font-bold text-slate-905 dark:text-white mb-4">
               Select Models
             </h3>
             <div className="space-y-3">
@@ -252,12 +256,12 @@ const Dashboard: React.FC = () => {
                       id={name}
                       checked={selectedModels.includes(name)}
                       onChange={() => handleModelToggle(name)}
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="h-4 w-4 rounded-lg border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                       style={{ accentColor: color }}
                     />
                     <label
                       htmlFor={name}
-                      className="ml-3 text-sm text-gray-700 dark:text-gray-300"
+                      className="ml-3 text-sm font-semibold text-slate-700 dark:text-slate-300 cursor-pointer"
                     >
                       {name}
                     </label>
@@ -267,9 +271,9 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
-
+ 
         {/* Main Chart */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
+        <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 shadow-xl hover-card-trigger transition-all duration-300 animate-fade-in-up">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
               {currentStockData

@@ -237,19 +237,25 @@ const Models: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 pt-20 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen bg-slate-50/50 dark:bg-slate-950 pt-20 pb-8 overflow-hidden">
+      {/* Abstract Glowing Decorative Elements */}
+      <div className="gradient-blob bg-blue-400 dark:bg-blue-600 top-20 -left-40"></div>
+      <div className="gradient-blob bg-purple-400 dark:bg-purple-600 bottom-10 -right-40"></div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
 
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-8 animate-fade-in">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">AI Model Laboratory</h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                <span className="text-gradient-primary">AI Model Laboratory</span>
+              </h1>
+              <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mt-2 max-w-2xl">
                 Advanced machine learning models for stock price forecasting and analysis.
               </p>
             </div>
-            <div className="mt-4 lg:mt-0 flex items-center space-x-4">
+            <div className="mt-4 lg:mt-0 flex items-center space-x-3">
               {/* Stock Search */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -263,7 +269,7 @@ const Models: React.FC = () => {
                       handleStockSearch(searchQuery);
                     }
                   }}
-                  className="pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white w-48"
+                  className="pl-10 pr-4 py-2.5 bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-2xl text-sm font-semibold text-slate-700 dark:text-slate-200 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all w-48"
                 />
               </div>
               <select
@@ -272,7 +278,7 @@ const Models: React.FC = () => {
                   setSelectedStock(e.target.value);
                   setHookSelectedStock(e.target.value);
                 }}
-                className="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white"
+                className="px-4 py-2.5 bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-2xl text-sm font-semibold text-slate-700 dark:text-slate-200 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all cursor-pointer"
               >
                 {popularStocks.map(stock => (
                   <option key={stock} value={stock}>{stock}</option>
@@ -281,7 +287,7 @@ const Models: React.FC = () => {
               <select
                 value={timeframe}
                 onChange={(e) => setTimeframe(e.target.value)}
-                className="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white"
+                className="px-4 py-2.5 bg-white/50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-2xl text-sm font-semibold text-slate-700 dark:text-slate-200 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all cursor-pointer"
               >
                 <option value="7D">7 Days</option>
                 <option value="30D">30 Days</option>
@@ -297,7 +303,7 @@ const Models: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6 mb-8"
+            className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 mb-8 shadow-xl hover-card-trigger transition-all duration-300 animate-fade-in-up"
           >
             <div className="flex items-center justify-between mb-4">
               <div>
