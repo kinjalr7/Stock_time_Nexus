@@ -21,12 +21,12 @@ const Navbar: React.FC = () => {
   const pagesMenuRef = useRef<HTMLDivElement>(null);
 
   const navigation = [
-    { name: 'Home',      href: '/' },
+    { name: 'Home', href: '/' },
     { name: 'Dashboard', href: '/dashboard' },
-    { name: 'Models',    href: '/models' },
-    { name: 'News',      href: '/news' },
-    { name: 'Trading',   href: '/trading' },
-    { name: 'Clusters',  href: '/clusters' },
+    { name: 'Models', href: '/models' },
+    { name: 'News', href: '/news' },
+    { name: 'Trading', href: '/trading' },
+    { name: 'Clusters', href: '/clusters' },
     { name: 'Portfolio', href: '/portfolio' },
   ];
 
@@ -85,11 +85,10 @@ const Navbar: React.FC = () => {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`relative px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                  isActive(item.href)
-                    ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-slate-800'
-                }`}
+                className={`relative px-3 py-2 text-sm font-medium rounded-md transition-colors ${isActive(item.href)
+                  ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                  : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-slate-800'
+                  }`}
               >
                 {item.name}
                 {isActive(item.href) && (
@@ -108,11 +107,10 @@ const Navbar: React.FC = () => {
               <button
                 id="pages-menu-button"
                 onClick={() => setShowPagesMenu(!showPagesMenu)}
-                className={`flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                  explorePages.some(p => isActive(p.href))
-                    ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-slate-800'
-                }`}
+                className={`flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${explorePages.some(p => isActive(p.href))
+                  ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                  : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-slate-800'
+                  }`}
               >
                 Pages
                 <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${showPagesMenu ? 'rotate-180' : ''}`} />
@@ -133,11 +131,10 @@ const Navbar: React.FC = () => {
                           key={page.name}
                           to={page.href}
                           onClick={() => setShowPagesMenu(false)}
-                          className={`block px-3 py-2 text-sm rounded-lg transition-colors ${
-                            isActive(page.href)
-                              ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 font-semibold'
-                              : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-slate-700'
-                          }`}
+                          className={`block px-3 py-2 text-sm rounded-lg transition-colors ${isActive(page.href)
+                            ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 font-semibold'
+                            : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-slate-700'
+                            }`}
                         >
                           {page.name}
                         </Link>
@@ -182,9 +179,8 @@ const Navbar: React.FC = () => {
                     </p>
                   </div>
                   <ChevronDown
-                    className={`h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform duration-200 ${
-                      showUserMenu ? 'rotate-180' : ''
-                    }`}
+                    className={`h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''
+                      }`}
                   />
                 </button>
 
@@ -294,11 +290,10 @@ const Navbar: React.FC = () => {
                     key={item.name}
                     to={item.href}
                     onClick={() => setIsOpen(false)}
-                    className={`block px-3 py-2 text-base font-medium rounded-lg ${
-                      isActive(item.href)
-                        ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'
-                    }`}
+                    className={`block px-3 py-2 text-base font-medium rounded-lg ${isActive(item.href)
+                      ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'
+                      }`}
                   >
                     {item.name}
                   </Link>
@@ -312,11 +307,10 @@ const Navbar: React.FC = () => {
                     key={page.name}
                     to={page.href}
                     onClick={() => setIsOpen(false)}
-                    className={`block px-3 py-2 text-base font-medium rounded-lg ${
-                      isActive(page.href)
-                        ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'
-                    }`}
+                    className={`block px-3 py-2 text-base font-medium rounded-lg ${isActive(page.href)
+                      ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'
+                      }`}
                   >
                     {page.name}
                   </Link>

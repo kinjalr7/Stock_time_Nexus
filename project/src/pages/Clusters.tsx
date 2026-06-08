@@ -286,8 +286,12 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 pt-20 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen bg-slate-50/50 dark:bg-slate-950 pt-20 pb-8 overflow-hidden">
+      {/* Abstract Glowing Decorative Elements */}
+      <div className="gradient-blob bg-blue-400 dark:bg-blue-600 top-20 -left-40"></div>
+      <div className="gradient-blob bg-purple-400 dark:bg-purple-600 bottom-10 -right-40"></div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
         <div className="space-y-6">
           {/* Header with Search and Filters */}
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between space-y-4 lg:space-y-0">
@@ -338,7 +342,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
           </div>
 
           {/* Industry Navigator */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+          <div className="glass-panel rounded-3xl p-5 border border-slate-200/50 dark:border-slate-800/80 shadow-xl hover-card-trigger transition-all duration-300">
             <div className="flex items-center space-x-3 mb-4">
               <Filter className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               <h3 className="text-gray-900 dark:text-white font-semibold">Industry Navigator</h3>
@@ -386,7 +390,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
           </div>
 
           {/* Search Results Summary */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+          <div className="glass-panel rounded-3xl p-5 border border-slate-200/50 dark:border-slate-800/80 shadow-xl hover-card-trigger transition-all duration-300">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
@@ -456,7 +460,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-md w-full border border-gray-200 dark:border-slate-700"
+                  className="glass-panel rounded-3xl p-6 max-w-md w-full border border-slate-200/50 dark:border-slate-800/80 shadow-2xl"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="flex items-center justify-between mb-6">
@@ -575,9 +579,9 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
                 whileHover={{ scale: 1.02, y: -2 }}
-                className={`bg-white dark:bg-slate-800 rounded-lg p-4 border cursor-pointer transition-all duration-200 ${stock.selected
-                  ? 'border-blue-600 dark:border-blue-400 bg-blue-50/50 dark:bg-blue-900/10'
-                  : 'border-gray-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-400'
+                className={`glass-panel rounded-3xl p-5 border cursor-pointer transition-all hover:shadow-xl hover-card-trigger ${stock.selected
+                  ? 'border-blue-650 dark:border-blue-450 bg-blue-500/10 dark:bg-blue-900/20 shadow-lg'
+                  : 'border-slate-200/50 dark:border-slate-800/80 hover:border-slate-350 dark:hover:border-slate-750'
                   }`}
                 onClick={() => setSelectedStockDetail(stock.symbol)}
               >
@@ -661,7 +665,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
           )}
 
           {/* Cluster Visualization */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700">
+          <div className="glass-panel rounded-3xl p-6 border border-slate-200/50 dark:border-slate-800/80 shadow-xl hover-card-trigger transition-all duration-300">
             <div className="flex items-center space-x-3 mb-6">
               <Target className="w-6 h-6 text-blue-600 dark:text-blue-400" />
               <div>
@@ -1062,7 +1066,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
           {/* Comprehensive Cluster Analysis - Always Visible */}
           <div className="space-y-6">
             {/* Cluster Overview */}
-            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700">
+            <div className="glass-panel rounded-3xl p-6 border border-slate-200/50 dark:border-slate-800/80 shadow-xl hover-card-trigger transition-all duration-300">
               <div className="flex items-center space-x-3 mb-6">
                 <Target className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 <div>
@@ -1116,7 +1120,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
             </div>
 
             {/* Market Performance Summary */}
-            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700">
+            <div className="glass-panel rounded-3xl p-6 border border-slate-200/50 dark:border-slate-800/80 shadow-xl hover-card-trigger transition-all duration-300">
               <div className="flex items-center space-x-3 mb-6">
                 <TrendingUp className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 <div>

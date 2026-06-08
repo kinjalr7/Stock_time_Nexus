@@ -38,7 +38,10 @@ const Auth: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-blue-900/20 flex items-center justify-center p-4">
+    <div className="relative min-h-screen bg-slate-50/50 dark:bg-slate-950 flex items-center justify-center p-4 overflow-hidden">
+      {/* Abstract Glowing Decorative Elements */}
+      <div className="gradient-blob bg-blue-400 dark:bg-blue-600 top-20 -left-40"></div>
+      <div className="gradient-blob bg-purple-400 dark:bg-purple-600 bottom-10 -right-40"></div>
       <div className="w-full max-w-md">
         {/* Back to Home */}
         <Link
@@ -53,7 +56,7 @@ const Auth: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-slate-700"
+          className="glass-panel rounded-3xl shadow-2xl p-8 border border-slate-200/50 dark:border-slate-800/80 hover-card-trigger transition-all duration-300 relative z-10"
         >
           {/* Logo */}
           <div className="text-center mb-8">
@@ -84,7 +87,7 @@ const Auth: React.FC = () => {
                     minLength: { value: 2, message: 'Name must be at least 2 characters' }
                   })}
                   type="text"
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-white transition-colors"
+                  className="w-full px-4 py-3 border border-slate-200/50 dark:border-slate-800/80 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white/50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-200 transition-all focus:outline-none"
                   placeholder="Enter your full name"
                 />
                 {errors.name && (
@@ -106,7 +109,7 @@ const Auth: React.FC = () => {
                   }
                 })}
                 type="email"
-                className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-white transition-colors"
+                className="w-full px-4 py-3 border border-slate-200/50 dark:border-slate-800/80 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white/50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-200 transition-all focus:outline-none"
                 placeholder="Enter your email"
               />
               {errors.email && (
@@ -125,7 +128,7 @@ const Auth: React.FC = () => {
                     minLength: { value: 6, message: 'Password must be at least 6 characters' }
                   })}
                   type={showPassword ? 'text' : 'password'}
-                  className="w-full px-4 py-3 pr-12 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-white transition-colors"
+                  className="w-full px-4 py-3 pr-12 border border-slate-200/50 dark:border-slate-800/80 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white/50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-200 transition-all focus:outline-none"
                   placeholder="Enter your password"
                 />
                 <button
@@ -162,7 +165,7 @@ const Auth: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-blue-600 dark:bg-blue-500 text-white py-3 px-4 rounded-xl hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-300 font-semibold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/35 hover-card-trigger disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">

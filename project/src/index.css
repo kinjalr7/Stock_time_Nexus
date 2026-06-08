@@ -1,31 +1,35 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  html {
+    color-scheme: dark;
+  }
   body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    @apply bg-slate-950 text-white;
   }
 }
 
-/* Premium Glassmorphism Cards */
+/* ── Premium Glassmorphism Cards ─────────────────────────────────────── */
 .glass-panel {
   background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .dark .glass-panel {
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(15, 23, 42, 0.70);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Floating Gradient Blobs background */
+/* ── Floating Gradient Blobs ─────────────────────────────────────────── */
 .gradient-blob {
   position: absolute;
   width: 500px;
@@ -44,45 +48,156 @@
 }
 
 @keyframes float {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(80px, -50px) scale(1.1);
-  }
-  100% {
-    transform: translate(-40px, 60px) scale(0.95);
-  }
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(80px, -50px) scale(1.1); }
+  100% { transform: translate(-40px, 60px) scale(0.95); }
 }
 
-/* Micro-animations and hover transitions */
+/* ── Hover Card Lift ─────────────────────────────────────────────────── */
 .hover-card-trigger {
   transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-
 .hover-card-trigger:hover {
   transform: translateY(-4px);
   box-shadow: 0 20px 40px -15px rgba(59, 130, 246, 0.15);
   border-color: rgba(59, 130, 246, 0.25);
 }
 
-/* Glowing text and buttons */
+/* ── Gradient Text ───────────────────────────────────────────────────── */
 .text-gradient-primary {
   background: linear-gradient(135deg, #3b82f6 0%, #6366f1 50%, #8b5cf6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
-
 .dark .text-gradient-primary {
   background: linear-gradient(135deg, #60a5fa 0%, #818cf8 50%, #a78bfa 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
+/* ── Glow Buttons ────────────────────────────────────────────────────── */
 .btn-glow {
   box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
 }
-
 .btn-glow:hover {
-  box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.45);
+  box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.5);
+}
+
+/* ── Live Pulse Dot ──────────────────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.3; transform: scale(0.8); }
+}
+.pulse-dot {
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+/* ── Ticker Marquee ──────────────────────────────────────────────────── */
+@keyframes marquee {
+  0%   { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  display: flex;
+  white-space: nowrap;
+  animation: marquee 35s linear infinite;
+}
+
+/* ── Candlestick Neon Glow ───────────────────────────────────────────── */
+.candle-up {
+  fill: #10B981;
+  filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.5));
+}
+.candle-down {
+  fill: #EF4444;
+  filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.5));
+}
+
+/* ── Circular Progress Animation ─────────────────────────────────────── */
+@keyframes spin-progress {
+  from { stroke-dashoffset: 283; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* ── Recharts Custom Styles ──────────────────────────────────────────── */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical   line {
+  stroke: rgba(255, 255, 255, 0.04) !important;
+}
+.recharts-tooltip-cursor {
+  fill: rgba(255, 255, 255, 0.03) !important;
+}
+.recharts-legend-item-text {
+  color: #94a3b8 !important;
+  font-size: 11px !important;
+}
+
+/* ── Dashboard KPI Card Glow ─────────────────────────────────────────── */
+@keyframes card-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.kpi-card-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.03) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  background-size: 200% 100%;
+  animation: card-shimmer 3s ease-in-out infinite;
+}
+
+/* ── Fade In Animations ──────────────────────────────────────────────── */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in    { animation: fade-in 0.5s ease-out forwards; }
+.animate-fade-in-up { animation: fade-in-up 0.6s ease-out forwards; }
+
+/* ── Scrollbar (Webkit) ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); }
+::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.4); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.7); }
+
+/* ── Tab Active Underline ────────────────────────────────────────────── */
+.tab-active-indicator {
+  position: relative;
+}
+.tab-active-indicator::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  border-radius: 1px;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+}
+
+/* ── Progress Bar Fill ───────────────────────────────────────────────── */
+.progress-bar-fill {
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Neon Border on Focus ────────────────────────────────────────────── */
+.neon-focus:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.4), 0 0 12px rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.6);
+}
+
+/* ── Font mono for numeric values ───────────────────────────────────── */
+.font-mono-nums {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-feature-settings: 'tnum';
 }

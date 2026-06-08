@@ -598,7 +598,7 @@ const Home: React.FC = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="relative"
             >
-              <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-8">
+              <div className="relative glass-panel rounded-3xl shadow-2xl p-8 border border-slate-200/50 dark:border-slate-850">
                 <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full opacity-20 animate-pulse"></div>
                 <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-gradient-to-br from-green-400 to-blue-500 rounded-full opacity-20 animate-pulse" style={{ animationDelay: '1s' }}></div>
                 
@@ -659,7 +659,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white dark:bg-slate-800 z-10 relative">
+      <section id="features" className="py-20 bg-slate-50/50 dark:bg-slate-900/10 z-10 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -721,7 +721,7 @@ const Home: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.1 }}
                 whileHover={{ scale: 1.05 }}
-                className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow"
+                className="glass-panel p-8 rounded-3xl shadow-xl hover:shadow-2xl hover-card-trigger transition-all duration-300 border border-slate-205 dark:border-slate-800/80"
               >
                 <div className="flex items-center mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
@@ -751,7 +751,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-white dark:bg-slate-800 z-10 relative">
+      <section id="pricing" className="py-20 bg-slate-50/50 dark:bg-slate-900/10 z-10 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Integrated Pricing Plans Component */}
           <PricingPlans onPlanSelect={handlePlanSelect} />
@@ -926,7 +926,7 @@ const Home: React.FC = () => {
                     animate={{ opacity: 1, rotateY: 0 }}
                     exit={{ opacity: 0, rotateY: -60 }}
                     transition={{ duration: 0.6 }}
-                    className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-10 flex flex-col items-center text-center hover:shadow-blue-200 dark:hover:shadow-blue-900 transition-all group"
+                    className="glass-panel rounded-3xl shadow-2xl p-10 flex flex-col items-center text-center hover:shadow-blue-500/10 hover-card-trigger transition-all duration-300 border border-slate-200/50 dark:border-slate-800/80 group"
                     style={{ transformStyle: 'preserve-3d', minWidth: 320, maxWidth: 400 }}
                   >
                     <div className="relative w-32 h-32 rounded-full overflow-hidden shadow-lg mb-4 border-4 border-blue-100 dark:border-blue-900 group-hover:scale-110 transition-transform bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold">
@@ -1227,7 +1227,7 @@ const Home: React.FC = () => {
       {/* Subscription Manager Modal */}
       {showSubscriptionManager && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="glass-panel rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-200/50 dark:border-slate-800/80 shadow-2xl">
             <SubscriptionManager selectedPlan={selectedPlan} />
             <div className="p-6 border-t border-gray-200 dark:border-slate-600">
               <button

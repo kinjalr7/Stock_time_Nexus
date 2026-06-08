@@ -355,7 +355,7 @@ const Models: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6 mb-8"
+            className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 mb-8 shadow-xl hover-card-trigger transition-all duration-300"
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -424,7 +424,7 @@ const Models: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-6 mb-8 text-white"
+          className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-6 mb-8 text-white shadow-xl hover-card-trigger transition-all duration-300 border border-white/10"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -451,10 +451,10 @@ const Models: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className={`relative p-6 rounded-xl border-2 cursor-pointer transition-all hover:shadow-lg ${
+                className={`relative p-6 rounded-3xl border cursor-pointer transition-all hover:shadow-xl hover-card-trigger ${
                   selectedModel === model.name
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-lg'
-                    : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-gray-300 dark:hover:border-slate-600'
+                    ? 'border-blue-500 bg-blue-500/10 dark:bg-blue-900/30 shadow-lg'
+                    : 'glass-panel border-slate-200/50 dark:border-slate-800/80 hover:border-slate-350 dark:hover:border-slate-750'
                 }`}
                 onClick={() => setSelectedModel(model.name)}
               >
@@ -503,7 +503,7 @@ const Models: React.FC = () => {
                 {selectedModel === model.name && (
                   <motion.div
                     layoutId="model-selector"
-                    className="absolute inset-0 border-2 border-blue-500 rounded-xl pointer-events-none"
+                    className="absolute inset-0 border-2 border-blue-500 rounded-3xl pointer-events-none"
                   />
                 )}
               </motion.div>
@@ -527,8 +527,8 @@ const Models: React.FC = () => {
         {/* Model Details Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Model Details</h3>
+            <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 shadow-xl hover-card-trigger transition-all duration-300">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Model Details</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Selected Model</span>
@@ -557,8 +557,8 @@ const Models: React.FC = () => {
 
           <div className="space-y-6">
             {/* Model Controls */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Model Controls</h3>
+            <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 shadow-xl hover-card-trigger transition-all duration-300">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Model Controls</h3>
               
               <div className="space-y-3">
                 <button 
@@ -583,8 +583,8 @@ const Models: React.FC = () => {
             </div>
 
             {/* System Resources */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">System Resources</h3>
+            <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 shadow-xl hover-card-trigger transition-all duration-300">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">System Resources</h3>
               
               <div className="space-y-4">
                 <div>

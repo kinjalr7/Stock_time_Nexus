@@ -96,8 +96,13 @@ const Pricing: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-blue-900/20 text-gray-900 dark:text-white transition-colors pt-16">
-      {/* Header */}
+    <div className="relative min-h-screen bg-slate-50/50 dark:bg-slate-950 text-gray-900 dark:text-white transition-colors pt-16 overflow-hidden">
+      {/* Abstract Glowing Decorative Elements */}
+      <div className="gradient-blob bg-blue-400 dark:bg-blue-600 top-20 -left-40"></div>
+      <div className="gradient-blob bg-purple-400 dark:bg-purple-600 bottom-10 -right-40"></div>
+      
+      <div className="relative z-10">
+        {/* Header */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
@@ -139,7 +144,7 @@ const Pricing: React.FC = () => {
       <PricingPlans onPlanSelect={handlePlanSelect} />
 
       {/* Features Section */}
-      <div className="py-20 bg-white dark:bg-slate-800 transition-colors border-t border-b border-gray-100 dark:border-slate-700/50">
+      <div className="py-20 bg-slate-50/50 dark:bg-slate-900/30 transition-colors border-t border-b border-slate-100 dark:border-slate-800/50 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -199,7 +204,7 @@ const Pricing: React.FC = () => {
             </p>
           </motion.div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-slate-700">
+          <div className="glass-panel rounded-3xl shadow-xl overflow-hidden border border-slate-200/50 dark:border-slate-850">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-slate-700/50">
@@ -294,7 +299,7 @@ const Pricing: React.FC = () => {
       </div>
 
       {/* FAQ Section */}
-      <div className="py-20 bg-white dark:bg-slate-800 transition-colors border-b border-gray-100 dark:border-slate-700/50">
+      <div className="py-20 bg-slate-50/50 dark:bg-slate-900/30 transition-colors border-b border-slate-100 dark:border-slate-800/50 backdrop-blur-md">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -319,7 +324,7 @@ const Pricing: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-gray-50 dark:bg-slate-700/40 rounded-xl p-6 border border-gray-100 dark:border-slate-700"
+                className="glass-panel rounded-2xl p-6 border border-slate-200/50 dark:border-slate-800/85 hover-card-trigger transition-all duration-300 shadow-md hover:shadow-lg"
               >
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                   {faq.question}
@@ -378,7 +383,7 @@ const Pricing: React.FC = () => {
       {/* Subscription Manager Modal */}
       {showSubscriptionManager && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-slate-700">
+          <div className="glass-panel rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-200/50 dark:border-slate-800/80 shadow-2xl">
             <SubscriptionManager />
             <div className="p-6 border-t border-gray-200 dark:border-slate-700">
               <button
@@ -391,6 +396,7 @@ const Pricing: React.FC = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

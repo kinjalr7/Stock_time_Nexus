@@ -160,8 +160,12 @@ const Trading: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 pt-20 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen bg-slate-50/50 dark:bg-slate-950 pt-20 pb-8 overflow-hidden">
+      {/* Abstract Glowing Decorative Elements */}
+      <div className="gradient-blob bg-blue-400 dark:bg-blue-600 top-20 -left-40"></div>
+      <div className="gradient-blob bg-purple-400 dark:bg-purple-600 bottom-10 -right-40"></div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
@@ -209,8 +213,8 @@ const Trading: React.FC = () => {
         {/* Price Range Orders Section */}
         {priceRangeOrders.length > 0 && (
           <div className="mb-8">
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Price Range Orders</h3>
+            <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 shadow-xl hover-card-trigger transition-all duration-300">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Price Range Orders</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {priceRangeOrders.map((order) => (
                   <motion.div
@@ -283,7 +287,7 @@ const Trading: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700"
+            className="glass-panel p-6 rounded-3xl shadow-xl border border-slate-200/50 dark:border-slate-800/80 hover-card-trigger transition-all duration-300"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -308,7 +312,7 @@ const Trading: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700"
+            className="glass-panel p-6 rounded-3xl shadow-xl border border-slate-200/50 dark:border-slate-800/80 hover-card-trigger transition-all duration-300"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -331,7 +335,7 @@ const Trading: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700"
+            className="glass-panel p-6 rounded-3xl shadow-xl border border-slate-200/50 dark:border-slate-800/80 hover-card-trigger transition-all duration-300"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -354,7 +358,7 @@ const Trading: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700"
+            className="glass-panel p-6 rounded-3xl shadow-xl border border-slate-200/50 dark:border-slate-800/80 hover-card-trigger transition-all duration-300"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -378,9 +382,9 @@ const Trading: React.FC = () => {
           {/* Main Charts */}
           <div className="lg:col-span-2 space-y-6">
             {/* Portfolio Performance */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
+            <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 shadow-xl hover-card-trigger transition-all duration-300">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Portfolio Performance</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Portfolio Performance</h2>
                 <div className="flex items-center space-x-2">
                   <div className="flex items-center space-x-1">
                     <div className="w-3 h-3 bg-blue-500 rounded"></div>
@@ -456,8 +460,8 @@ const Trading: React.FC = () => {
             </div>
 
             {/* Strategy Performance */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Strategy Performance</h3>
+            <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 shadow-xl hover-card-trigger transition-all duration-300">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Strategy Performance</h3>
               
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
@@ -481,8 +485,8 @@ const Trading: React.FC = () => {
             </div>
 
             {/* Recent Trades */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Recent Trades</h3>
+            <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 shadow-xl hover-card-trigger transition-all duration-300">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Recent Trades</h3>
               
               <div className="space-y-3">
                 {trades.slice(0, 10).map((trade, index) => (
@@ -528,8 +532,8 @@ const Trading: React.FC = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Trading Strategies */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Trading Strategies</h3>
+            <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 shadow-xl hover-card-trigger transition-all duration-300">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Trading Strategies</h3>
               
               <div className="space-y-4">
                 {strategies.map((strategy) => (
@@ -585,8 +589,8 @@ const Trading: React.FC = () => {
             </div>
 
             {/* Live Signals */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Live Trading Signals</h3>
+            <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 shadow-xl hover-card-trigger transition-all duration-300">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Live Trading Signals</h3>
               
               <div className="space-y-3">
                 {recentSignals.map((signal, index) => (
@@ -632,7 +636,7 @@ const Trading: React.FC = () => {
             </div>
 
             {/* Risk Management */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
+            <div className="glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 shadow-xl hover-card-trigger transition-all duration-300">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Risk Management</h3>
               
               <div className="space-y-4">
@@ -680,7 +684,7 @@ const Trading: React.FC = () => {
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-md w-full p-6"
+                className="glass-panel border border-slate-200/50 dark:border-slate-800/80 rounded-3xl shadow-2xl max-w-md w-full p-6"
               >
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Set Price Range Order</h2>

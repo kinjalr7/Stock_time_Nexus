@@ -20,7 +20,7 @@ import Pricing from './pages/Pricing';
 // Protected Route component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, isLoading } = useAuth();
-  
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
@@ -28,7 +28,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
       </div>
     );
   }
-  
+
   return user ? <>{children}</> : <Navigate to="/auth" />;
 };
 
@@ -38,7 +38,7 @@ function App() {
       <AuthProvider>
         <Router>
           <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors">
-            <Toaster 
+            <Toaster
               position="top-right"
               toastOptions={{
                 duration: 4000,
@@ -67,53 +67,53 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route 
-                path="/models" 
+              <Route
+                path="/models"
                 element={
                   <ProtectedRoute>
                     <Models />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/news" 
+              <Route
+                path="/news"
                 element={
                   <ProtectedRoute>
                     <News />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/trading" 
+              <Route
+                path="/trading"
                 element={
                   <ProtectedRoute>
                     <Trading />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/clusters" 
+              <Route
+                path="/clusters"
                 element={
                   <ProtectedRoute>
                     <Clusters />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/portfolio" 
+              <Route
+                path="/portfolio"
                 element={
                   <ProtectedRoute>
                     <Portfolio />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/test" 
+              <Route
+                path="/test"
                 element={
                   <ProtectedRoute>
                     <TestPage />
                   </ProtectedRoute>
-                } 
+                }
               />
               <Route path="/chatbot" element={<ChatbotDemo />} />
               <Route path="/pricing" element={<Pricing />} />

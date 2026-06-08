@@ -293,67 +293,75 @@ const News: React.FC = () => {
                     </button>
                   </div>
                 ) : (
-                  <div className="space-y-4 p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
                     {filteredNews.map((item, index) => (
                       <motion.div
                         key={item.id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: Math.min(index * 0.05, 0.5) }}
-                        className="p-4 bg-white/30 dark:bg-slate-900/20 border border-slate-100 dark:border-slate-800/40 rounded-2xl hover-card-trigger transition-all duration-300 shadow-sm"
+                        className="flex flex-col justify-between p-5 glass-panel border border-slate-200/50 dark:border-slate-800/80 rounded-3xl hover-card-trigger transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/5"
                       >
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-center space-x-2 flex-wrap gap-y-1">
-                            {item.sentiment === 'positive' ? (
-                              <TrendingUp className="h-4 w-4 text-green-500" />
-                            ) : item.sentiment === 'negative' ? (
-                              <TrendingDown className="h-4 w-4 text-red-500" />
-                            ) : (
-                              <Minus className="h-4 w-4 text-gray-500" />
-                            )}
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                              item.sentiment === 'positive' ? 'text-green-600 bg-green-100 dark:bg-green-900/30' :
-                              item.sentiment === 'negative' ? 'text-red-600 bg-red-100 dark:bg-red-900/30' :
-                              'text-gray-600 bg-gray-100 dark:bg-gray-800'
-                            }`}>
-                              {item.sentiment}
-                            </span>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">{item.source}</span>
+                        <div>
+                          <div className="flex items-center justify-between mb-3.5">
+                            <div className="flex items-center space-x-2">
+                              {item.sentiment === 'positive' ? (
+                                <span className="p-1 bg-green-500/10 text-green-500 rounded-lg animate-pulse">
+                                  <TrendingUp className="h-4 w-4" />
+                                </span>
+                              ) : item.sentiment === 'negative' ? (
+                                <span className="p-1 bg-red-500/10 text-red-500 rounded-lg animate-pulse">
+                                  <TrendingDown className="h-4 w-4" />
+                                </span>
+                              ) : (
+                                <span className="p-1 bg-slate-500/10 text-slate-500 rounded-lg">
+                                  <Minus className="h-4 w-4" />
+                                </span>
+                              )}
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                                item.sentiment === 'positive' ? 'text-green-600 bg-green-100/50 dark:text-green-400 dark:bg-green-950/30' :
+                                item.sentiment === 'negative' ? 'text-red-600 bg-red-100/50 dark:text-red-400 dark:bg-red-950/30' :
+                                'text-slate-600 bg-slate-100 dark:text-slate-450 dark:bg-slate-800/55'
+                              }`}>
+                                {item.sentiment}
+                              </span>
+                              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{item.source}</span>
+                            </div>
+                            <div className="flex items-center space-x-1 flex-shrink-0 text-slate-400 dark:text-slate-500">
+                              <Clock className="h-3.5 w-3.5" />
+                              <span className="text-xs font-medium">
+                                {formatDate(item.publishedAt)}
+                              </span>
+                            </div>
                           </div>
-                          <div className="flex items-center space-x-1 flex-shrink-0">
-                            <Clock className="h-3.5 w-3.5 text-gray-400" />
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
-                              {formatDate(item.publishedAt)}
-                            </span>
-                          </div>
+
+                          <h3 className="text-base font-bold text-slate-905 dark:text-white mb-2 leading-snug hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                            {item.title}
+                          </h3>
+
+                          {item.summary && (
+                            <p className="text-slate-600 dark:text-slate-400 mb-4 text-xs line-clamp-3 leading-relaxed">
+                              {item.summary}
+                            </p>
+                          )}
                         </div>
 
-                        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2 leading-snug">
-                          {item.title}
-                        </h3>
-
-                        {item.summary && (
-                          <p className="text-gray-600 dark:text-gray-400 mb-3 text-sm line-clamp-2">
-                            {item.summary}
-                          </p>
-                        )}
-
-                        <div className="flex items-center justify-between">
+                        <div className="pt-4 border-t border-slate-100 dark:border-slate-850 flex items-center justify-between mt-auto">
                           <div className="flex items-center gap-1 flex-wrap">
                             {(item.symbols || []).map((symbol) => (
                               <span
                                 key={symbol}
-                                className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-xs font-medium"
+                                className="px-2 py-0.5 bg-blue-100/50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-md text-[10px] font-bold tracking-wider"
                               >
                                 {symbol}
                               </span>
                             ))}
                           </div>
 
-                          <div className="flex items-center space-x-3">
-                            <div className="flex items-center space-x-1">
-                              <BarChart3 className="h-4 w-4 text-gray-400" />
-                              <span className="text-xs text-gray-500">
+                          <div className="flex items-center space-x-3.5">
+                            <div className="flex items-center space-x-1 bg-slate-100/50 dark:bg-slate-800/40 px-2 py-1 rounded-lg">
+                              <BarChart3 className="h-3.5 w-3.5 text-slate-500 dark:text-slate-400" />
+                              <span className="text-xs font-bold text-slate-600 dark:text-slate-355">
                                 {((item.sentimentScore || 0) * 100).toFixed(0)}%
                               </span>
                             </div>
@@ -362,9 +370,9 @@ const News: React.FC = () => {
                                 href={item.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center space-x-1 text-blue-600 hover:text-blue-700 text-sm"
+                                className="flex items-center space-x-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-xs font-bold transition-colors"
                               >
-                                <ExternalLink className="h-4 w-4" />
+                                <ExternalLink className="h-3.5 w-3.5" />
                                 <span>Read</span>
                               </a>
                             )}
