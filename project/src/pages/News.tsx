@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Newspaper, 
@@ -16,44 +16,94 @@ import {
   Globe,
   Eye,
   ThumbsUp,
-  ThumbsDown
+  ThumbsDown,
+  Rss
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
-import { useStockData } from '../hooks/useStockData';
+
+const API_BASE = 'http://localhost:8000';
+
+interface NewsItem {
+  id: string;
+  title: string;
+  summary: string;
+  url: string;
+  source: string;
+  publishedAt: string | number;
+  sentiment: 'positive' | 'negative' | 'neutral';
+  sentimentScore: number;
+  relevanceScore: number;
+  symbols: string[];
+}
+
+const TRACKED_SYMBOLS = ['AAPL', 'TSLA', 'GOOGL', 'MSFT', 'AMZN'];
+
+/** Fetch news for a list of symbols and deduplicate by title */
+async function fetchNewsForSymbols(symbols: string[]): Promise<NewsItem[]> {
+  const results = await Promise.allSettled(
+    symbols.map((sym) =>
+      fetch(`${API_BASE}/api/news/latest?symbol=${sym}`).then((r) => r.json())
+    )
+  );
+  const seen = new Set<string>();
+  const all: NewsItem[] = [];
+  for (const r of results) {
+    if (r.status === 'fulfilled' && Array.isArray(r.value)) {
+      for (const item of r.value as NewsItem[]) {
+        if (!seen.has(item.title)) {
+          seen.add(item.title);
+          all.push(item);
+        }
+      }
+    }
+  }
+  return all.sort((a, b) => Number(b.publishedAt) - Number(a.publishedAt));
+}
 
 const News: React.FC = () => {
-  const { news, loading, fetchStockData } = useStockData();
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [newsLoading, setNewsLoading] = useState(true);
+  const [newsError, setNewsError] = useState<string | null>(null);
   const [selectedSentiment, setSelectedSentiment] = useState<'all' | 'positive' | 'negative' | 'neutral'>('all');
   const [selectedSource, setSelectedSource] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSymbol, setSelectedSymbol] = useState<string>('all');
 
-  useEffect(() => {
-    const fetchNews = async () => {
-      const res = await fetch('/api/news/latest?symbol=AAPL');
-      const data = await res.json();
-      // setNews(data); // This line was removed as per the edit hint
-    };
-    fetchNews();
-    const interval = setInterval(fetchNews, 5 * 60 * 1000); // Refresh every 5 minutes
-    return () => clearInterval(interval);
+  const loadNews = useCallback(async () => {
+    setNewsLoading(true);
+    setNewsError(null);
+    try {
+      const items = await fetchNewsForSymbols(TRACKED_SYMBOLS);
+      setNews(items);
+    } catch (e: any) {
+      setNewsError('Could not load news. Is the backend running?');
+    } finally {
+      setNewsLoading(false);
+    }
   }, []);
 
-  const filteredNews = news.filter(item => {
+  useEffect(() => {
+    loadNews();
+    const interval = setInterval(loadNews, 5 * 60 * 1000); // refresh every 5 min
+    return () => clearInterval(interval);
+  }, [loadNews]);
+
+
+  const filteredNews = news.filter((item) => {
     const matchesSentiment = selectedSentiment === 'all' || item.sentiment === selectedSentiment;
     const matchesSource = selectedSource === 'all' || item.source === selectedSource;
-    const matchesSearch = searchQuery === '' || 
+    const matchesSearch =
+      searchQuery === '' ||
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.summary.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesSymbol = selectedSymbol === 'all' || item.symbols.includes(selectedSymbol);
-    
+      (item.summary || '').toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSymbol = selectedSymbol === 'all' || (item.symbols || []).includes(selectedSymbol);
     return matchesSentiment && matchesSource && matchesSearch && matchesSymbol;
   });
 
   const sentimentData = [
-    { name: 'Positive', value: news.filter(n => n.sentiment === 'positive').length, color: '#10B981' },
-    { name: 'Neutral', value: news.filter(n => n.sentiment === 'neutral').length, color: '#6B7280' },
-    { name: 'Negative', value: news.filter(n => n.sentiment === 'negative').length, color: '#EF4444' }
+    { name: 'Positive', value: news.filter((n) => n.sentiment === 'positive').length, color: '#10B981' },
+    { name: 'Neutral',  value: news.filter((n) => n.sentiment === 'neutral').length,  color: '#6B7280' },
+    { name: 'Negative', value: news.filter((n) => n.sentiment === 'negative').length, color: '#EF4444' },
   ];
 
   const sentimentTrend = Array.from({ length: 7 }, (_, i) => {
@@ -63,46 +113,36 @@ const News: React.FC = () => {
       date: date.toLocaleDateString(),
       positive: Math.floor(Math.random() * 20) + 10,
       negative: Math.floor(Math.random() * 15) + 5,
-      neutral: Math.floor(Math.random() * 25) + 15
+      neutral:  Math.floor(Math.random() * 25) + 15,
     };
   });
 
   const marketImpact = [
-    { symbol: 'AAPL', sentiment: 0.65, impact: 'High', change: 2.34 },
-    { symbol: 'TSLA', sentiment: 0.82, impact: 'Very High', change: 5.67 },
-    { symbol: 'GOOGL', sentiment: -0.23, impact: 'Medium', change: -1.25 },
-    { symbol: 'MSFT', sentiment: 0.45, impact: 'Medium', change: 3.42 },
-    { symbol: 'AMZN', sentiment: 0.12, impact: 'Low', change: -0.98 }
+    { symbol: 'AAPL',  sentiment:  0.65, impact: 'High',      change:  2.34 },
+    { symbol: 'TSLA',  sentiment:  0.82, impact: 'Very High', change:  5.67 },
+    { symbol: 'GOOGL', sentiment: -0.23, impact: 'Medium',    change: -1.25 },
+    { symbol: 'MSFT',  sentiment:  0.45, impact: 'Medium',    change:  3.42 },
+    { symbol: 'AMZN',  sentiment:  0.12, impact: 'Low',       change: -0.98 },
   ];
-
-  const getSentimentIcon = (sentiment: string) => {
-    switch (sentiment) {
-      case 'positive': return <TrendingUp className="h-4 w-4 text-green-500" />;
-      case 'negative': return <TrendingDown className="h-4 w-4 text-red-500" />;
-      default: return <Minus className="h-4 w-4 text-gray-500" />;
-    }
-  };
-
-  const getSentimentColor = (sentiment: string) => {
-    switch (sentiment) {
-      case 'positive': return 'text-green-600 bg-green-100 dark:bg-green-900/30';
-      case 'negative': return 'text-red-600 bg-red-100 dark:bg-red-900/30';
-      default: return 'text-gray-600 bg-gray-100 dark:bg-gray-900/30';
-    }
-  };
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
-      case 'Very High': return 'text-red-600 bg-red-100';
-      case 'High': return 'text-orange-600 bg-orange-100';
-      case 'Medium': return 'text-yellow-600 bg-yellow-100';
-      case 'Low': return 'text-green-600 bg-green-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case 'Very High': return 'text-red-600 bg-red-100 dark:bg-red-900/30';
+      case 'High':      return 'text-orange-600 bg-orange-100 dark:bg-orange-900/30';
+      case 'Medium':    return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30';
+      case 'Low':       return 'text-green-600 bg-green-100 dark:bg-green-900/30';
+      default:          return 'text-gray-600 bg-gray-100 dark:bg-gray-800';
     }
   };
 
-  const sources = [...new Set(news.map(item => item.source))];
-  const symbols = ['AAPL', 'TSLA', 'GOOGL', 'MSFT', 'AMZN'];
+  const sources  = [...new Set(news.map((item) => item.source).filter(Boolean))];
+  const symbols  = TRACKED_SYMBOLS;
+
+  const formatDate = (publishedAt: string | number) => {
+    const ms = typeof publishedAt === 'number' ? publishedAt : Date.parse(publishedAt);
+    if (isNaN(ms)) return '—';
+    return new Date(ms).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900 pt-20 pb-8">
@@ -113,21 +153,30 @@ const News: React.FC = () => {
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">News Sentiment Analysis</h1>
               <p className="text-gray-600 dark:text-gray-400 mt-2">
-                Real-time financial news analysis with AI-powered sentiment scoring and market impact assessment.
+                Real-time financial news with AI-powered sentiment scoring and market impact assessment.
               </p>
             </div>
             <div className="mt-4 lg:mt-0 flex items-center space-x-4">
               <button
-                onClick={() => fetchStockData(['AAPL', 'TSLA', 'GOOGL', 'MSFT', 'AMZN'])}
-                disabled={loading}
+                onClick={loadNews}
+                disabled={newsLoading}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center disabled:opacity-50"
               >
-                <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-4 w-4 mr-2 ${newsLoading ? 'animate-spin' : ''}`} />
                 Refresh News
               </button>
             </div>
           </div>
         </div>
+
+        {/* Error banner */}
+        {newsError && (
+          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl flex items-center gap-3">
+            <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
+            <p className="text-sm text-red-700 dark:text-red-300">{newsError}</p>
+          </div>
+        )}
+
 
         {/* Filters */}
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6 mb-8">
@@ -218,10 +267,24 @@ const News: React.FC = () => {
               </div>
               
               <div className="max-h-[800px] overflow-y-auto">
-                {loading ? (
+                {newsLoading ? (
                   <div className="p-8 text-center">
-                    <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-gray-600 dark:text-gray-400">Loading latest news...</p>
+                    <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                    <p className="text-gray-600 dark:text-gray-400">Loading latest news from yfinance…</p>
+                  </div>
+                ) : filteredNews.length === 0 ? (
+                  <div className="p-12 text-center">
+                    <Rss className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                    <p className="text-gray-500 dark:text-gray-400 font-medium">No articles found</p>
+                    <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
+                      {newsError ? 'Check that the backend is running.' : 'Try different filters or refresh.'}
+                    </p>
+                    <button
+                      onClick={loadNews}
+                      className="mt-4 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      Retry
+                    </button>
                   </div>
                 ) : (
                   <div className="space-y-4 p-6">
@@ -230,63 +293,75 @@ const News: React.FC = () => {
                         key={item.id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="p-4 border border-gray-200 dark:border-slate-700 rounded-lg hover:shadow-md transition-shadow"
+                        transition={{ delay: Math.min(index * 0.05, 0.5) }}
+                        className="p-4 border border-gray-200 dark:border-slate-700 rounded-xl hover:shadow-md transition-shadow"
                       >
                         <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-center space-x-2">
-                            {getSentimentIcon(item.sentiment)}
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getSentimentColor(item.sentiment)}`}>
+                          <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+                            {item.sentiment === 'positive' ? (
+                              <TrendingUp className="h-4 w-4 text-green-500" />
+                            ) : item.sentiment === 'negative' ? (
+                              <TrendingDown className="h-4 w-4 text-red-500" />
+                            ) : (
+                              <Minus className="h-4 w-4 text-gray-500" />
+                            )}
+                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                              item.sentiment === 'positive' ? 'text-green-600 bg-green-100 dark:bg-green-900/30' :
+                              item.sentiment === 'negative' ? 'text-red-600 bg-red-100 dark:bg-red-900/30' :
+                              'text-gray-600 bg-gray-100 dark:bg-gray-800'
+                            }`}>
                               {item.sentiment}
                             </span>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
-                              {item.source}
-                            </span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">{item.source}</span>
                           </div>
-                          <div className="flex items-center space-x-2">
-                            <Clock className="h-4 w-4 text-gray-400" />
+                          <div className="flex items-center space-x-1 flex-shrink-0">
+                            <Clock className="h-3.5 w-3.5 text-gray-400" />
                             <span className="text-xs text-gray-500 dark:text-gray-400">
-                              {new Date(item.publishedAt).toLocaleDateString()}
+                              {formatDate(item.publishedAt)}
                             </span>
                           </div>
                         </div>
-                        
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+
+                        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2 leading-snug">
                           {item.title}
                         </h3>
-                        
-                        <p className="text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
-                          {item.summary}
-                        </p>
-                        
+
+                        {item.summary && (
+                          <p className="text-gray-600 dark:text-gray-400 mb-3 text-sm line-clamp-2">
+                            {item.summary}
+                          </p>
+                        )}
+
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            {item.symbols.map(symbol => (
+                          <div className="flex items-center gap-1 flex-wrap">
+                            {(item.symbols || []).map((symbol) => (
                               <span
                                 key={symbol}
-                                className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-xs font-medium"
+                                className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-xs font-medium"
                               >
                                 {symbol}
                               </span>
                             ))}
                           </div>
-                          
-                          <div className="flex items-center space-x-4">
+
+                          <div className="flex items-center space-x-3">
                             <div className="flex items-center space-x-1">
                               <BarChart3 className="h-4 w-4 text-gray-400" />
                               <span className="text-xs text-gray-500">
-                                {(item.sentimentScore * 100).toFixed(0)}%
+                                {((item.sentimentScore || 0) * 100).toFixed(0)}%
                               </span>
                             </div>
-                            <a
-                              href={item.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center space-x-1 text-blue-600 hover:text-blue-700 text-sm"
-                            >
-                              <ExternalLink className="h-4 w-4" />
-                              <span>Read more</span>
-                            </a>
+                            {item.url && (
+                              <a
+                                href={item.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center space-x-1 text-blue-600 hover:text-blue-700 text-sm"
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                                <span>Read</span>
+                              </a>
+                            )}
                           </div>
                         </div>
                       </motion.div>

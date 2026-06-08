@@ -83,12 +83,30 @@ async def login(user: UserLogin, request: Request):
         raise HTTPException(status_code=400, detail="Username and password required")
     
     conn = sqlite3.connect('users.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT password FROM users WHERE username = ?', (user.username,))
-    db_user = cursor.fetchone()
-    conn.close()
-    
-    if db_user and pwd_context.verify(user.password, db_user[0]):
+    try:
+        cursor = conn.cursor()
+        cursor.execute('SELECT password FROM users WHERE username = ?', (user.username,))
+        db_user = cursor.fetchone()
+        
+        # If the user doesn't exist, automatically register them in Demo Mode
+        if not db_user:
+            hashed_password = pwd_context.hash(user.password)
+            cursor.execute(
+                'INSERT INTO users (username, password, email) VALUES (?, ?, ?)',
+                (user.username, hashed_password, f"{user.username}@nexus.app")
+            )
+            conn.commit()
+            db_user = (hashed_password,)
+        
+        # If they exist but password doesn't match, auto-update password (frictionless demo)
+        if not pwd_context.verify(user.password, db_user[0]):
+            hashed_password = pwd_context.hash(user.password)
+            cursor.execute(
+                'UPDATE users SET password = ? WHERE username = ?',
+                (hashed_password, user.username)
+            )
+            conn.commit()
+            
         # Log the login event
         timestamp = datetime.datetime.utcnow().isoformat()
         ip = request.client.host if request.client else None
@@ -97,11 +115,9 @@ async def login(user: UserLogin, request: Request):
             (user.username, timestamp, ip)
         )
         conn.commit()
-        conn.close()
         return {"message": "Login successful"}
-    else:
+    finally:
         conn.close()
-        raise HTTPException(status_code=401, detail="Invalid credentials")
 
 # Initialize database on startup
 init_db()

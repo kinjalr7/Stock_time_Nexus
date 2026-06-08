@@ -1,11 +1,16 @@
 from fastapi import APIRouter, HTTPException
 from .models import stocks, orders, Order, Stock
+from .utils import get_stock_price
 import uuid
 
 router = APIRouter()
 
 @router.get("/stocks", response_model=list[Stock])
 def get_stocks():
+    for s in stocks:
+        live_price = get_stock_price(s.symbol)
+        if live_price:
+            s.price = live_price
     return stocks
 
 @router.get("/orders", response_model=list[Order])

@@ -912,6 +912,11 @@ const Home: React.FC = () => {
               };
             }, []);
             const member = team[current];
+            const getInitials = (name: string) => {
+              const parts = name.trim().split(' ');
+              if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+              return name.slice(0, 2).toUpperCase();
+            };
             return (
               <div className="flex flex-col items-center">
                 <div className="relative w-full flex items-center justify-center mb-8" style={{ perspective: '1200px' }}>
@@ -924,8 +929,14 @@ const Home: React.FC = () => {
                     className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-10 flex flex-col items-center text-center hover:shadow-blue-200 dark:hover:shadow-blue-900 transition-all group"
                     style={{ transformStyle: 'preserve-3d', minWidth: 320, maxWidth: 400 }}
                   >
-                    <div className="w-32 h-32 rounded-full overflow-hidden shadow-lg mb-4 border-4 border-blue-100 dark:border-blue-900 group-hover:scale-110 transition-transform bg-gradient-to-br from-blue-200 to-purple-200 dark:from-blue-900/40 dark:to-purple-900/40">
-                      <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
+                    <div className="relative w-32 h-32 rounded-full overflow-hidden shadow-lg mb-4 border-4 border-blue-100 dark:border-blue-900 group-hover:scale-110 transition-transform bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold">
+                      <span>{getInitials(member.name)}</span>
+                      <img 
+                        src={member.avatar} 
+                        alt={member.name} 
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }} 
+                        className="absolute inset-0 w-full h-full object-cover" 
+                      />
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{member.name}</h3>
                     <p className="text-blue-600 dark:text-blue-400 font-semibold mb-2">{member.role}</p>
@@ -1141,7 +1152,7 @@ const Home: React.FC = () => {
                 </button>
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-                Press Enter to send • Powered by AI
+                Press Enter to send • Powered by Nexus
               </p>
             </div>
           </motion.div>

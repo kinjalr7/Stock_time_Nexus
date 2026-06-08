@@ -96,7 +96,7 @@ const Pricing: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-blue-900/20 text-gray-900 dark:text-white transition-colors pt-16">
       {/* Header */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10"></div>
@@ -112,10 +112,10 @@ const Pricing: React.FC = () => {
                 Pricing Plans
               </h1>
             </div>
-            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
               Choose the perfect plan for your business. All plans include our advanced AI chatbot with different feature sets and usage limits.
             </p>
-            <div className="flex items-center justify-center space-x-4 text-sm text-gray-500">
+            <div className="flex items-center justify-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
               <div className="flex items-center space-x-1">
                 <CheckCircle className="w-4 h-4 text-green-500" />
                 <span>14-day free trial</span>
@@ -139,7 +139,7 @@ const Pricing: React.FC = () => {
       <PricingPlans onPlanSelect={handlePlanSelect} />
 
       {/* Features Section */}
-      <div className="py-20 bg-white">
+      <div className="py-20 bg-white dark:bg-slate-800 transition-colors border-t border-b border-gray-100 dark:border-slate-700/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -148,10 +148,10 @@ const Pricing: React.FC = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Why Choose Our Platform?
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               We provide enterprise-grade features with simple, transparent pricing.
             </p>
           </motion.div>
@@ -169,10 +169,10 @@ const Pricing: React.FC = () => {
                 <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center text-white mx-auto mb-4">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                   {feature.description}
                 </p>
               </motion.div>
@@ -182,7 +182,7 @@ const Pricing: React.FC = () => {
       </div>
 
       {/* Comparison Table */}
-      <div className="py-20 bg-gray-50">
+      <div className="py-20 bg-gray-50 dark:bg-slate-900/50 transition-colors border-b border-gray-100 dark:border-slate-700/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -191,67 +191,67 @@ const Pricing: React.FC = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Plan Comparison
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Compare features across all our plans to find the perfect fit for your needs.
             </p>
           </motion.div>
 
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-slate-700">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-gray-50 dark:bg-slate-700/50">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Features</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Features</th>
                     <th className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center space-x-2">
                         <Zap className="w-5 h-5 text-blue-500" />
-                        <span className="text-sm font-semibold text-gray-900">Starter</span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">Starter</span>
                       </div>
                     </th>
                     <th className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center space-x-2">
                         <Star className="w-5 h-5 text-purple-500" />
-                        <span className="text-sm font-semibold text-gray-900">Professional</span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">Professional</span>
                       </div>
                     </th>
                     <th className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center space-x-2">
                         <Crown className="w-5 h-5 text-orange-500" />
-                        <span className="text-sm font-semibold text-gray-900">Enterprise</span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">Enterprise</span>
                       </div>
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200 dark:divide-slate-700">
                   <tr>
-                    <td className="px-6 py-4 text-sm text-gray-900">Monthly Messages</td>
-                    <td className="px-6 py-4 text-center text-sm text-gray-600">100</td>
-                    <td className="px-6 py-4 text-center text-sm text-gray-600">1,000</td>
-                    <td className="px-6 py-4 text-center text-sm text-gray-600">Unlimited</td>
+                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">Monthly Messages</td>
+                    <td className="px-6 py-4 text-center text-sm text-gray-600 dark:text-gray-400">100</td>
+                    <td className="px-6 py-4 text-center text-sm text-gray-600 dark:text-gray-400">1,000</td>
+                    <td className="px-6 py-4 text-center text-sm text-gray-600 dark:text-gray-400">Unlimited</td>
                   </tr>
                   <tr>
-                    <td className="px-6 py-4 text-sm text-gray-900">User Accounts</td>
-                    <td className="px-6 py-4 text-center text-sm text-gray-600">1</td>
-                    <td className="px-6 py-4 text-center text-sm text-gray-600">5</td>
-                    <td className="px-6 py-4 text-center text-sm text-gray-600">Unlimited</td>
+                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">User Accounts</td>
+                    <td className="px-6 py-4 text-center text-sm text-gray-600 dark:text-gray-400">1</td>
+                    <td className="px-6 py-4 text-center text-sm text-gray-600 dark:text-gray-400">5</td>
+                    <td className="px-6 py-4 text-center text-sm text-gray-600 dark:text-gray-400">Unlimited</td>
                   </tr>
                   <tr>
-                    <td className="px-6 py-4 text-sm text-gray-900">Storage</td>
-                    <td className="px-6 py-4 text-center text-sm text-gray-600">1GB</td>
-                    <td className="px-6 py-4 text-center text-sm text-gray-600">10GB</td>
-                    <td className="px-6 py-4 text-center text-sm text-gray-600">Unlimited</td>
+                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">Storage</td>
+                    <td className="px-6 py-4 text-center text-sm text-gray-600 dark:text-gray-400">1GB</td>
+                    <td className="px-6 py-4 text-center text-sm text-gray-600 dark:text-gray-400">10GB</td>
+                    <td className="px-6 py-4 text-center text-sm text-gray-600 dark:text-gray-400">Unlimited</td>
                   </tr>
                   <tr>
-                    <td className="px-6 py-4 text-sm text-gray-900">Support</td>
-                    <td className="px-6 py-4 text-center text-sm text-gray-600">Email</td>
-                    <td className="px-6 py-4 text-center text-sm text-gray-600">Priority</td>
-                    <td className="px-6 py-4 text-center text-sm text-gray-600">24/7 Phone</td>
+                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">Support</td>
+                    <td className="px-6 py-4 text-center text-sm text-gray-600 dark:text-gray-400">Email</td>
+                    <td className="px-6 py-4 text-center text-sm text-gray-600 dark:text-gray-400">Priority</td>
+                    <td className="px-6 py-4 text-center text-sm text-gray-600 dark:text-gray-400">24/7 Phone</td>
                   </tr>
                   <tr>
-                    <td className="px-6 py-4 text-sm text-gray-900">API Access</td>
+                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">API Access</td>
                     <td className="px-6 py-4 text-center">
                       <span className="text-red-500">✕</span>
                     </td>
@@ -263,7 +263,7 @@ const Pricing: React.FC = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="px-6 py-4 text-sm text-gray-900">Custom Integrations</td>
+                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">Custom Integrations</td>
                     <td className="px-6 py-4 text-center">
                       <span className="text-red-500">✕</span>
                     </td>
@@ -275,7 +275,7 @@ const Pricing: React.FC = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="px-6 py-4 text-sm text-gray-900">White-label Solution</td>
+                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">White-label Solution</td>
                     <td className="px-6 py-4 text-center">
                       <span className="text-red-500">✕</span>
                     </td>
@@ -294,7 +294,7 @@ const Pricing: React.FC = () => {
       </div>
 
       {/* FAQ Section */}
-      <div className="py-20 bg-white">
+      <div className="py-20 bg-white dark:bg-slate-800 transition-colors border-b border-gray-100 dark:border-slate-700/50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -303,10 +303,10 @@ const Pricing: React.FC = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Frequently Asked Questions
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-gray-600 dark:text-gray-300">
               Everything you need to know about our pricing and plans.
             </p>
           </motion.div>
@@ -319,12 +319,12 @@ const Pricing: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-gray-50 rounded-xl p-6"
+                className="bg-gray-50 dark:bg-slate-700/40 rounded-xl p-6 border border-gray-100 dark:border-slate-700"
               >
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                   {faq.question}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                   {faq.answer}
                 </p>
               </motion.div>
@@ -378,12 +378,12 @@ const Pricing: React.FC = () => {
       {/* Subscription Manager Modal */}
       {showSubscriptionManager && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-slate-700">
             <SubscriptionManager />
-            <div className="p-6 border-t border-gray-200">
+            <div className="p-6 border-t border-gray-200 dark:border-slate-700">
               <button
                 onClick={() => setShowSubscriptionManager(false)}
-                className="w-full px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
+                className="w-full px-6 py-3 bg-gray-900 dark:bg-slate-700 text-white rounded-lg hover:bg-gray-800 dark:hover:bg-slate-600 transition-colors"
               >
                 Close
               </button>

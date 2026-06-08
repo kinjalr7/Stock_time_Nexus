@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  ScatterChart, 
-  Scatter, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  ScatterChart,
+  Scatter,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   Cell,
   LineChart,
@@ -16,10 +16,10 @@ import {
   ComposedChart,
   Customized
 } from 'recharts';
-import { 
-  Target, 
-  TrendingUp, 
-  Users, 
+import {
+  Target,
+  TrendingUp,
+  Users,
   Star,
   ArrowRight,
   BarChart3,
@@ -107,41 +107,41 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
     { symbol: 'MSFT', name: 'Microsoft Corporation', sector: 'Technology', price: 378.85, change: 4.12, changePercent: 1.10, marketCap: '2.8T', pe: 32.1, dividend: 2.72, beta: 0.9, volume: '28.1M', cluster: 1, similarity: 89.7, selected: selectedStock === 'MSFT' },
     { symbol: 'GOOGL', name: 'Alphabet Inc.', sector: 'Technology', price: 142.56, change: 1.87, changePercent: 1.33, marketCap: '1.8T', pe: 25.4, dividend: 0, beta: 1.1, volume: '32.5M', cluster: 1, similarity: 87.3, selected: selectedStock === 'GOOGL' },
     { symbol: 'META', name: 'Meta Platforms Inc.', sector: 'Technology', price: 352.70, change: 8.90, changePercent: 2.59, marketCap: '895B', pe: 24.8, dividend: 0, beta: 1.3, volume: '18.7M', cluster: 1, similarity: 85.1, selected: selectedStock === 'META' },
-    
+
     // High Growth
     { symbol: 'TSLA', name: 'Tesla Inc.', sector: 'Automotive', price: 248.50, change: -5.20, changePercent: -2.05, marketCap: '789B', pe: 65.2, dividend: 0, beta: 2.1, volume: '95.3M', cluster: 2, similarity: 94.2, selected: selectedStock === 'TSLA' },
     { symbol: 'NVDA', name: 'NVIDIA Corporation', sector: 'Technology', price: 875.25, change: 15.60, changePercent: 1.81, marketCap: '2.2T', pe: 71.3, dividend: 0.16, beta: 1.7, volume: '42.8M', cluster: 2, similarity: 92.8, selected: selectedStock === 'NVDA' },
     { symbol: 'AMD', name: 'Advanced Micro Devices', sector: 'Technology', price: 184.52, change: -2.15, changePercent: -1.15, marketCap: '298B', pe: 45.6, dividend: 0, beta: 1.8, volume: '38.9M', cluster: 2, similarity: 88.4, selected: selectedStock === 'AMD' },
-    
+
     // Value Stocks
     { symbol: 'AMZN', name: 'Amazon.com Inc.', sector: 'E-commerce', price: 152.32, change: -2.45, changePercent: -1.58, marketCap: '1.6T', pe: 42.1, dividend: 0, beta: 1.2, volume: '35.6M', cluster: 3, similarity: 82.7, selected: selectedStock === 'AMZN' },
     { symbol: 'JPM', name: 'JPMorgan Chase & Co.', sector: 'Financial', price: 168.45, change: 1.23, changePercent: 0.74, marketCap: '485B', pe: 12.8, dividend: 4.00, beta: 1.1, volume: '12.4M', cluster: 3, similarity: 78.9, selected: selectedStock === 'JPM' },
     { symbol: 'JNJ', name: 'Johnson & Johnson', sector: 'Healthcare', price: 162.78, change: 0.89, changePercent: 0.55, marketCap: '428B', pe: 15.2, dividend: 2.95, beta: 0.7, volume: '8.9M', cluster: 3, similarity: 75.3, selected: selectedStock === 'JNJ' },
-    
+
     // Additional stocks for comprehensive analysis
     { symbol: 'NFLX', name: 'Netflix Inc.', sector: 'Entertainment', price: 445.23, change: 12.45, changePercent: 2.88, marketCap: '198B', pe: 35.7, dividend: 0, beta: 1.4, volume: '4.2M', cluster: 2, similarity: 79.6, selected: selectedStock === 'NFLX' },
     { symbol: 'DIS', name: 'The Walt Disney Company', sector: 'Entertainment', price: 98.76, change: -1.34, changePercent: -1.34, marketCap: '180B', pe: 28.9, dividend: 0, beta: 1.2, volume: '11.8M', cluster: 3, similarity: 72.1, selected: selectedStock === 'DIS' },
-    
+
     // Healthcare Sector
     { symbol: 'PFE', name: 'Pfizer Inc.', sector: 'Healthcare', price: 28.45, change: -0.32, changePercent: -1.11, marketCap: '161B', pe: 12.3, dividend: 6.12, beta: 0.8, volume: '45.8M', cluster: 3, similarity: 68.9, selected: selectedStock === 'PFE' },
     { symbol: 'UNH', name: 'UnitedHealth Group Inc.', sector: 'Healthcare', price: 485.67, change: 8.92, changePercent: 1.87, marketCap: '449B', pe: 18.9, dividend: 1.45, beta: 0.9, volume: '3.2M', cluster: 1, similarity: 76.4, selected: selectedStock === 'UNH' },
     { symbol: 'ABBV', name: 'AbbVie Inc.', sector: 'Healthcare', price: 156.78, change: 2.34, changePercent: 1.52, marketCap: '276B', pe: 14.2, dividend: 4.12, beta: 0.7, volume: '6.8M', cluster: 3, similarity: 71.2, selected: selectedStock === 'ABBV' },
-    
+
     // Energy Sector
     { symbol: 'XOM', name: 'Exxon Mobil Corporation', sector: 'Energy', price: 98.45, change: -1.23, changePercent: -1.23, marketCap: '413B', pe: 11.8, dividend: 3.85, beta: 1.1, volume: '18.9M', cluster: 3, similarity: 69.8, selected: selectedStock === 'XOM' },
     { symbol: 'CVX', name: 'Chevron Corporation', sector: 'Energy', price: 145.67, change: 2.89, changePercent: 2.02, marketCap: '287B', pe: 13.2, dividend: 4.15, beta: 1.0, volume: '12.3M', cluster: 3, similarity: 67.4, selected: selectedStock === 'CVX' },
-    
+
     // Consumer Goods
     { symbol: 'KO', name: 'The Coca-Cola Company', sector: 'Consumer Goods', price: 58.92, change: 0.45, changePercent: 0.77, marketCap: '255B', pe: 24.1, dividend: 3.12, beta: 0.6, volume: '15.7M', cluster: 3, similarity: 65.9, selected: selectedStock === 'KO' },
     { symbol: 'PG', name: 'Procter & Gamble Co.', sector: 'Consumer Goods', price: 156.34, change: 1.23, changePercent: 0.79, marketCap: '369B', pe: 25.8, dividend: 2.45, beta: 0.4, volume: '8.9M', cluster: 3, similarity: 64.2, selected: selectedStock === 'PG' },
-    
+
     // Industrial
     { symbol: 'BA', name: 'Boeing Co.', sector: 'Industrial', price: 245.67, change: 12.34, changePercent: 5.29, marketCap: '148B', pe: 45.2, dividend: 0, beta: 1.4, volume: '8.2M', cluster: 2, similarity: 73.8, selected: selectedStock === 'BA' },
     { symbol: 'CAT', name: 'Caterpillar Inc.', sector: 'Industrial', price: 234.56, change: -3.45, changePercent: -1.45, marketCap: '118B', pe: 16.8, dividend: 2.12, beta: 1.2, volume: '4.1M', cluster: 1, similarity: 70.5, selected: selectedStock === 'CAT' },
-    
+
     // Real Estate
     { symbol: 'SPG', name: 'Simon Property Group Inc.', sector: 'Real Estate', price: 145.23, change: 1.67, changePercent: 1.16, marketCap: '48B', pe: 18.9, dividend: 5.67, beta: 1.3, volume: '2.8M', cluster: 3, similarity: 62.7, selected: selectedStock === 'SPG' },
-    
+
     // Communication Services
     { symbol: 'VZ', name: 'Verizon Communications Inc.', sector: 'Communication Services', price: 38.45, change: -0.23, changePercent: -0.59, marketCap: '162B', pe: 8.9, dividend: 7.23, beta: 0.5, volume: '22.1M', cluster: 3, similarity: 59.4, selected: selectedStock === 'VZ' },
     { symbol: 'T', name: 'AT&T Inc.', sector: 'Communication Services', price: 16.78, change: 0.12, changePercent: 0.72, marketCap: '120B', pe: 7.2, dividend: 6.89, beta: 0.6, volume: '35.6M', cluster: 3, similarity: 58.1, selected: selectedStock === 'T' }
@@ -169,13 +169,23 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
     3: 'Value & Dividend Leaders'
   };
 
-  const sectors = ['all', 'Technology', 'Automotive', 'E-commerce', 'Financial', 'Healthcare', 'Entertainment', 'Energy', 'Consumer Goods', 'Industrial', 'Real Estate', 'Communication Services'];
+  const sectors = ['all', 'Technology', 'Automotive', 'E-commerce', 'Financial', 'Healthcare', 'Entertainment', 'Energy', 'Consumer Goods', 'Industrial', 'Real Estate', 'Communication Services', 'other'];
+  const predefinedSectors = ['Technology', 'Automotive', 'E-commerce', 'Financial', 'Healthcare', 'Entertainment', 'Energy', 'Consumer Goods', 'Industrial', 'Real Estate', 'Communication Services'];
 
   const filteredStocks = stockDatabase.filter(stock => {
-    const matchesSearch = stock.symbol.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         stock.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         stock.sector.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSector = filterSector === 'all' || stock.sector === filterSector;
+    const matchesSearch = stock.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      stock.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      stock.sector.toLowerCase().includes(searchTerm.toLowerCase());
+
+    let matchesSector = false;
+    if (filterSector === 'all') {
+      matchesSector = true;
+    } else if (filterSector === 'other') {
+      matchesSector = !predefinedSectors.includes(stock.sector);
+    } else {
+      matchesSector = stock.sector === filterSector;
+    }
+
     return matchesSearch && matchesSector;
   });
 
@@ -197,7 +207,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
         similarity: Math.random() * 30 + 70,
         selected: false
       };
-      
+
       stockDatabase.push(newStock);
       setCustomStock({ symbol: '', name: '', sector: '', price: '', change: '', changePercent: '' });
       setShowAddStock(false);
@@ -285,7 +295,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Advanced Stock Analysis</h1>
               <p className="text-gray-600 dark:text-gray-400">AI-powered stock clustering, analysis, and recommendations</p>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-blue-600 dark:text-blue-400" />
@@ -298,7 +308,8 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                   className="bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg pl-10 pr-4 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
                 />
               </div>
-              
+
+
               <select
                 value={filterSector}
                 onChange={(e) => setFilterSector(e.target.value)}
@@ -306,7 +317,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
               >
                 {sectors.map(sector => (
                   <option key={sector} value={sector}>
-                    {sector === 'all' ? 'All Sectors' : sector}
+                    {sector === 'all' ? 'All Sectors' : sector === 'other' ? 'Other' : sector}
                   </option>
                 ))}
               </select>
@@ -326,24 +337,23 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
             </div>
           </div>
 
-          {/* Quick Sector Filter Buttons */}
+          {/* Industry Navigator */}
           <div className="bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
             <div className="flex items-center space-x-3 mb-4">
               <Filter className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              <h3 className="text-gray-900 dark:text-white font-semibold">Quick Sector Filters</h3>
+              <h3 className="text-gray-900 dark:text-white font-semibold">Industry Navigator</h3>
             </div>
             <div className="flex flex-wrap gap-2">
-              {sectors.filter(s => s !== 'all').map(sector => (
+              {sectors.filter(s => s !== 'all' && s !== 'other').map(sector => (
                 <motion.button
                   key={sector}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setFilterSector(sector)}
-                  className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                    filterSector === sector
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900/20'
-                  }`}
+                  className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${filterSector === sector
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900/20'
+                    }`}
                 >
                   {sector}
                 </motion.button>
@@ -352,13 +362,25 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setFilterSector('all')}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                  filterSector === 'all'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900/20'
-                }`}
+                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${filterSector === 'all'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900/20'
+                  }`}
               >
                 All Sectors
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  setFilterSector('other');
+                }}
+                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${filterSector === 'other'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900/20'
+                  }`}
+              >
+                Other
               </motion.button>
             </div>
           </div>
@@ -389,7 +411,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                   </div>
                 )}
               </div>
-              
+
               <div className="flex items-center space-x-4">
                 <div className="text-sm text-gray-600 dark:text-gray-400">
                   <span className="font-semibold text-blue-600 dark:text-blue-400">
@@ -408,7 +430,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                 </div>
               </div>
             </div>
-            
+
             {/* Search Tips */}
             {filteredStocks.length > 0 && (
               <div className="mt-3 pt-3 border-t border-gray-200 dark:border-slate-700">
@@ -455,7 +477,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                       <input
                         type="text"
                         value={customStock.symbol}
-                        onChange={(e) => setCustomStock({...customStock, symbol: e.target.value})}
+                        onChange={(e) => setCustomStock({ ...customStock, symbol: e.target.value })}
                         placeholder="e.g., AAPL"
                         className="w-full bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
@@ -468,7 +490,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                       <input
                         type="text"
                         value={customStock.name}
-                        onChange={(e) => setCustomStock({...customStock, name: e.target.value})}
+                        onChange={(e) => setCustomStock({ ...customStock, name: e.target.value })}
                         placeholder="e.g., Apple Inc."
                         className="w-full bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
@@ -480,7 +502,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                       </label>
                       <select
                         value={customStock.sector}
-                        onChange={(e) => setCustomStock({...customStock, sector: e.target.value})}
+                        onChange={(e) => setCustomStock({ ...customStock, sector: e.target.value })}
                         className="w-full bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="">Select Sector</option>
@@ -498,7 +520,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                         <input
                           type="number"
                           value={customStock.price}
-                          onChange={(e) => setCustomStock({...customStock, price: e.target.value})}
+                          onChange={(e) => setCustomStock({ ...customStock, price: e.target.value })}
                           placeholder="0.00"
                           step="0.01"
                           className="w-full bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -512,7 +534,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                         <input
                           type="number"
                           value={customStock.changePercent}
-                          onChange={(e) => setCustomStock({...customStock, changePercent: e.target.value})}
+                          onChange={(e) => setCustomStock({ ...customStock, changePercent: e.target.value })}
                           placeholder="0.00"
                           step="0.01"
                           className="w-full bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -553,11 +575,10 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
                 whileHover={{ scale: 1.02, y: -2 }}
-                className={`bg-white dark:bg-slate-800 rounded-lg p-4 border cursor-pointer transition-all duration-200 ${
-                  stock.selected 
-                    ? 'border-blue-600 dark:border-blue-400 bg-blue-50/50 dark:bg-blue-900/10' 
-                    : 'border-gray-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-400'
-                }`}
+                className={`bg-white dark:bg-slate-800 rounded-lg p-4 border cursor-pointer transition-all duration-200 ${stock.selected
+                  ? 'border-blue-600 dark:border-blue-400 bg-blue-50/50 dark:bg-blue-900/10'
+                  : 'border-gray-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-400'
+                  }`}
                 onClick={() => setSelectedStockDetail(stock.symbol)}
               >
                 <div className="flex items-center justify-between mb-3">
@@ -573,32 +594,31 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                     <Eye className="w-4 h-4" />
                   </motion.button>
                 </div>
-                
+
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-500 dark:text-gray-400 text-sm">Price</span>
                     <span className="text-gray-900 dark:text-white font-semibold">${stock.price}</span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <span className="text-gray-500 dark:text-gray-400 text-sm">Change</span>
-                    <span className={`text-sm font-medium ${
-                      stock.change >= 0 ? 'text-green-400' : 'text-red-400'
-                    }`}>
+                    <span className={`text-sm font-medium ${stock.change >= 0 ? 'text-green-400' : 'text-red-400'
+                      }`}>
                       {stock.change >= 0 ? '+' : ''}{stock.change} ({stock.changePercent >= 0 ? '+' : ''}{stock.changePercent}%)
                     </span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <span className="text-gray-500 dark:text-gray-400 text-sm">Market Cap</span>
                     <span className="text-gray-900 dark:text-white text-sm">{stock.marketCap}</span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <span className="text-gray-500 dark:text-gray-400 text-sm">P/E Ratio</span>
                     <span className="text-gray-900 dark:text-white text-sm">{stock.pe}</span>
                   </div>
-                  
+
                   {stock.similarity < 100 && (
                     <div className="mt-3 pt-3 border-t border-gray-200 dark:border-slate-700">
                       <div className="flex items-center justify-between">
@@ -606,7 +626,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                         <span className="text-blue-600 dark:text-blue-400 text-xs font-semibold">{stock.similarity}%</span>
                       </div>
                       <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-1 mt-1">
-                        <div 
+                        <div
                           className="bg-blue-600 dark:bg-blue-400 h-1 rounded-full transition-all duration-500"
                           style={{ width: `${stock.similarity}%` }}
                         />
@@ -655,18 +675,18 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                 <ResponsiveContainer width="100%" height={400}>
                   <ScatterChart>
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                    <XAxis 
-                      type="number" 
-                      dataKey="x" 
-                      name="P/E Ratio" 
+                    <XAxis
+                      type="number"
+                      dataKey="x"
+                      name="P/E Ratio"
                       domain={[0, 80]}
                       stroke="#9CA3AF"
                       fontSize={12}
                     />
-                    <YAxis 
-                      type="number" 
-                      dataKey="y" 
-                      name="Beta Score" 
+                    <YAxis
+                      type="number"
+                      dataKey="y"
+                      name="Beta Score"
                       domain={[0, 120]}
                       stroke="#9CA3AF"
                       fontSize={12}
@@ -685,17 +705,17 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                         return stock ? `${stock.symbol} - ${stock.name}` : '';
                       }}
                     />
-                    
+
                     {Object.keys(clusterColors).map(clusterId => (
                       <Scatter
                         key={clusterId}
-                        data={clusterData.filter(d => d.cluster === (parseInt(clusterId) as 1|2|3))}
-                        fill={clusterColors[clusterId as unknown as 1|2|3]}
+                        data={clusterData.filter(d => d.cluster === (parseInt(clusterId) as 1 | 2 | 3))}
+                        fill={clusterColors[clusterId as unknown as 1 | 2 | 3]}
                       >
-                        {clusterData.filter(d => d.cluster === (parseInt(clusterId) as 1|2|3)).map((entry, index) => (
-                          <Cell 
+                        {clusterData.filter(d => d.cluster === (parseInt(clusterId) as 1 | 2 | 3)).map((entry, index) => (
+                          <Cell
                             key={`cell-${index}`}
-                            fill={entry.selected ? '#EF4444' : clusterColors[clusterId as unknown as 1|2|3]}
+                            fill={entry.selected ? '#EF4444' : clusterColors[clusterId as unknown as 1 | 2 | 3]}
                             stroke={entry.selected ? '#FEF2F2' : 'none'}
                             strokeWidth={entry.selected ? 3 : 0}
                           />
@@ -710,9 +730,9 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                 <h3 className="text-gray-900 dark:text-white font-semibold">Cluster Legend</h3>
                 {Object.entries(clusterNames).map(([clusterId, name]) => (
                   <div key={clusterId} className="flex items-center space-x-3">
-                    <div 
-                      className="w-4 h-4 rounded-full" 
-                      style={{ backgroundColor: clusterColors[clusterId as unknown as 1|2|3] }}
+                    <div
+                      className="w-4 h-4 rounded-full"
+                      style={{ backgroundColor: clusterColors[clusterId as unknown as 1 | 2 | 3] }}
                     />
                     <span className="text-gray-300 text-sm">{name}</span>
                   </div>
@@ -779,7 +799,7 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                               <p className="text-gray-400">{stockDetail.sector} • {stockDetail.marketCap} Market Cap</p>
                             </div>
                           </div>
-                          
+
                           <button
                             onClick={() => setSelectedStockDetail(null)}
                             className="p-2 text-gray-400 hover:text-white transition-colors"
@@ -821,10 +841,9 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                                 <Shield className="w-4 h-4 text-blue-400" />
                               )}
                             </div>
-                            <p className={`text-2xl font-bold ${
-                              stockDetail.aiAnalysis.recommendation === 'Buy' ? 'text-blue-400' :
+                            <p className={`text-2xl font-bold ${stockDetail.aiAnalysis.recommendation === 'Buy' ? 'text-blue-400' :
                               stockDetail.aiAnalysis.recommendation === 'Sell' ? 'text-red-400' : 'text-blue-400'
-                            }`}>
+                              }`}>
                               {stockDetail.aiAnalysis.recommendation}
                             </p>
                             <p className="text-sm text-gray-300">{stockDetail.aiAnalysis.sentiment} sentiment</p>
@@ -1056,15 +1075,15 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                 {Object.entries(clusterAnalysis).map(([clusterId, analysis]) => (
                   <div key={clusterId} className="bg-gray-50 dark:bg-slate-700 rounded-lg p-4 border border-gray-200 dark:border-slate-600">
                     <div className="flex items-center space-x-3 mb-4">
-                      <div 
-                        className="w-4 h-4 rounded-full" 
-                        style={{ backgroundColor: clusterColors[clusterId as unknown as 1|2|3] }}
+                      <div
+                        className="w-4 h-4 rounded-full"
+                        style={{ backgroundColor: clusterColors[clusterId as unknown as 1 | 2 | 3] }}
                       />
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{analysis.name}</h3>
                     </div>
-                    
+
                     <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{analysis.description}</p>
-                    
+
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-gray-500 dark:text-gray-400 text-sm">Average Return</span>
@@ -1113,21 +1132,21 @@ function RecommendationsPanel({ stockData, selectedStock }: RecommendationsPanel
                   </div>
                   <div className="text-gray-600 dark:text-gray-400 text-sm">Total Stocks</div>
                 </div>
-                
+
                 <div className="bg-gray-50 dark:bg-slate-700 rounded-lg p-4 text-center">
                   <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">
                     {stockDatabase.filter(s => s.changePercent > 0).length}
                   </div>
                   <div className="text-gray-600 dark:text-gray-400 text-sm">Gaining Stocks</div>
                 </div>
-                
+
                 <div className="bg-gray-50 dark:bg-slate-700 rounded-lg p-4 text-center">
                   <div className="text-2xl font-bold text-red-600 dark:text-red-400 mb-1">
                     {stockDatabase.filter(s => s.changePercent < 0).length}
                   </div>
                   <div className="text-gray-600 dark:text-gray-400 text-sm">Declining Stocks</div>
                 </div>
-                
+
                 <div className="bg-gray-50 dark:bg-slate-700 rounded-lg p-4 text-center">
                   <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
                     {sectors.filter(s => s !== 'all').length}
