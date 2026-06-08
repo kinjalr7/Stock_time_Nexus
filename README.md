@@ -478,7 +478,7 @@ sublicense, and/or sell copies of this software.
 **Tirth Patel**
 
 [![GitHub](https://img.shields.io/badge/GitHub-tirthpatel143-181717?style=for-the-badge&logo=github)](https://github.com/tirthpatel143)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/tirthpatel)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/tirth-patel-ba70b0273/)
 
 *Built with ❤️ and way too much caffeine ☕*
 
