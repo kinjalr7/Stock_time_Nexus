@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Bot, User, Loader2, Sparkles, MessageCircle, X, Maximize2, Minimize2, Zap } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 
 const API_BASE = 'http://localhost:8000';
 
@@ -34,6 +35,7 @@ interface ConversationMessage {
 }
 
 const Chatbot: React.FC<ChatbotProps> = ({ className = '', portfolioContext }) => {
+  const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -72,6 +74,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ className = '', portfolioContext }) =
     const res = await axios.post(`${API_BASE}/api/chat/`, {
       messages: newHistory,
       context: portfolioContext || null,
+      username: user?.username || 'demo',
     });
 
     const data = res.data;

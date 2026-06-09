@@ -37,11 +37,32 @@ class ChatMessage(BaseModel):
 
 class ChatRequest(BaseModel):
     messages: list[ChatMessage]
-    context: Optional[str] = None   # optional portfolio context
+    context: Optional[str] = None   # optional portfolio context from frontend
+    username: Optional[str] = "demo" # specific user to fetch vector history for
 
 
 @router.post("/")
 async def chat(req: ChatRequest):
+    # Try using LlamaIndex RAG if possible
+    try:
+        from .vector_store import get_user_chat_engine
+        
+        # We only need the latest user message for the chat engine
+        # since LlamaIndex chat engine handles its own history (or we can use query engine)
+        latest_message = req.messages[-1].content if req.messages else ""
+        
+        chat_engine = get_user_chat_engine(req.username)
+        response = chat_engine.chat(latest_message)
+        
+        return {
+            "reply": str(response),
+            "tokens": 0, # Tokens handled internally by LlamaIndex
+            "model": "LlamaIndex RAG",
+            "live": True,
+        }
+    except Exception as e:
+        print(f"[chatbot] LlamaIndex RAG failed or not configured: {e}. Falling back to standard chat.")
+
     if not OPENAI_API_KEY:
         return _local_fallback(req.messages[-1].content if req.messages else "")
 

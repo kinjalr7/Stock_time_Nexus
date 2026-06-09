@@ -1,7 +1,7 @@
 """
 Phase 1 + 2: Portfolio API with SQLite persistence + live yfinance prices.
 """
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 import yfinance as yf
 import datetime
@@ -9,6 +9,22 @@ from .database import db_cursor
 from .utils import get_stock_price
 
 router = APIRouter()
+
+def _trigger_vector_update(username: str):
+    """Background task to sync the user's portfolio and watchlist to the vector store."""
+    try:
+        from .vector_store import update_user_index
+        holdings = _get_holdings(username)
+        portfolio_data = [{"symbol": h.symbol, "quantity": h.quantity, "avg_price": h.avg_price} for h in holdings]
+        
+        with db_cursor() as cur:
+            cur.execute("SELECT symbol FROM watchlist WHERE username = ?", (username,))
+            rows = cur.fetchall()
+            watchlist = [r["symbol"] for r in rows]
+            
+        update_user_index(username, portfolio_data, watchlist)
+    except Exception as e:
+        print(f"[VectorStore] Failed to update index for {username}: {e}")
 
 
 class PortfolioHolding(BaseModel):
@@ -78,7 +94,7 @@ def get_portfolio_analytics(username: str = "demo"):
 
 
 @router.post("/buy", response_model=PortfolioHolding)
-def buy_stock(req: BuyRequest, username: str = "demo"):
+def buy_stock(req: BuyRequest, background_tasks: BackgroundTasks, username: str = "demo"):
     with db_cursor() as cur:
         cur.execute(
             "SELECT quantity, avg_price FROM portfolio_holdings WHERE username = ? AND symbol = ?",
@@ -113,7 +129,7 @@ def buy_stock(req: BuyRequest, username: str = "demo"):
     qty = row["quantity"]
     avg = row["avg_price"]
     value = qty * live_price
-    return PortfolioHolding(
+    res = PortfolioHolding(
         symbol=req.symbol,
         quantity=qty,
         avg_price=round(avg, 2),
@@ -122,9 +138,11 @@ def buy_stock(req: BuyRequest, username: str = "demo"):
         pnl=round(value - avg * qty, 2),
     )
 
+    background_tasks.add_task(_trigger_vector_update, username)
+    return res
 
 @router.post("/sell", response_model=PortfolioHolding)
-def sell_stock(req: SellRequest, username: str = "demo"):
+def sell_stock(req: SellRequest, background_tasks: BackgroundTasks, username: str = "demo"):
     with db_cursor() as cur:
         cur.execute(
             "SELECT quantity, avg_price FROM portfolio_holdings WHERE username = ? AND symbol = ?",
@@ -153,7 +171,7 @@ def sell_stock(req: SellRequest, username: str = "demo"):
     live_price = get_stock_price(req.symbol) or req.price
     avg = existing["avg_price"]
     value = new_qty * live_price
-    return PortfolioHolding(
+    res = PortfolioHolding(
         symbol=req.symbol,
         quantity=new_qty,
         avg_price=round(avg, 2),
@@ -161,6 +179,9 @@ def sell_stock(req: SellRequest, username: str = "demo"):
         value=round(value, 2),
         pnl=round(value - avg * new_qty, 2),
     )
+    
+    background_tasks.add_task(_trigger_vector_update, username)
+    return res
 
 
 @router.get("/history")
