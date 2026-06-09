@@ -20,6 +20,10 @@ OPENAI_API_KEY  = os.environ.get("OPENAI_API_KEY", "")
 OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1").rstrip("/")
 CHAT_MODEL      = os.environ.get("CHAT_MODEL", "mistralai/Mistral-7B-Instruct-v0.3")
 
+# Sanitize the key - if user put hhf_... (typo), make it hf_...
+if OPENAI_API_KEY.startswith("hhf_"):
+    OPENAI_API_KEY = OPENAI_API_KEY[1:]
+
 # Detect HuggingFace endpoint so we can adapt the payload
 IS_HUGGINGFACE = "huggingface.co" in OPENAI_BASE_URL
 
@@ -41,15 +45,18 @@ class ChatRequest(BaseModel):
     username: Optional[str] = "demo" # specific user to fetch vector history for
 
 
+class IndexRequest(BaseModel):
+    title: str
+    content: str
+    username: Optional[str] = "demo"
+
+
 @router.post("/")
 async def chat(req: ChatRequest):
     # Try using LlamaIndex RAG if possible
+    latest_message = req.messages[-1].content if req.messages else ""
     try:
         from .vector_store import get_user_chat_engine
-        
-        # We only need the latest user message for the chat engine
-        # since LlamaIndex chat engine handles its own history (or we can use query engine)
-        latest_message = req.messages[-1].content if req.messages else ""
         
         chat_engine = get_user_chat_engine(req.username)
         response = chat_engine.chat(latest_message)
@@ -61,10 +68,16 @@ async def chat(req: ChatRequest):
             "live": True,
         }
     except Exception as e:
-        print(f"[chatbot] LlamaIndex RAG failed or not configured: {e}. Falling back to standard chat.")
+        print(f"[chatbot] LlamaIndex RAG failed or not configured: {e}. Attempting vector store fallback search.")
+        try:
+            from .vector_store import query_knowledge_base_fallback
+            fallback_res = query_knowledge_base_fallback(latest_message, req.username)
+            return fallback_res
+        except Exception as fallback_err:
+            print(f"[chatbot] Vector store fallback failed: {fallback_err}. Falling back to standard LLM chat.")
 
     if not OPENAI_API_KEY:
-        return _local_fallback(req.messages[-1].content if req.messages else "")
+        return _local_fallback(latest_message)
 
     system_content = SYSTEM_PROMPT
     if req.context:
@@ -113,20 +126,65 @@ async def chat(req: ChatRequest):
         }
 
     except httpx.HTTPStatusError as e:
-        # Return useful error details for debugging
         detail = e.response.text[:300]
         print(f"[chatbot] API error {e.response.status_code}: {detail}")
-        raise HTTPException(status_code=502, detail=f"LLM API error: {detail}")
+        # Let's fallback to semantic search of vector store on error instead of throwing 502
+        try:
+            from .vector_store import query_knowledge_base_fallback
+            return query_knowledge_base_fallback(latest_message, req.username)
+        except Exception:
+            raise HTTPException(status_code=502, detail=f"LLM API error: {detail}")
 
     except httpx.TimeoutException:
-        # Timeout is common on HF free tier cold-start — return fallback gracefully
-        print("[chatbot] Request timed out — falling back to local response")
-        return {**_local_fallback(req.messages[-1].content if req.messages else ""),
-                "note": "HF model timed out (cold start). Try again in a few seconds."}
+        print("[chatbot] Request timed out — falling back to vector database/local response")
+        try:
+            from .vector_store import query_knowledge_base_fallback
+            return {**query_knowledge_base_fallback(latest_message, req.username),
+                    "note": "HF model timed out (cold start). Direct ChromaDB retrieval used."}
+        except Exception:
+            return {**_local_fallback(latest_message),
+                    "note": "HF model timed out (cold start). Try again in a few seconds."}
 
     except Exception as e:
         print(f"[chatbot] Unexpected error: {e}")
-        return _local_fallback(req.messages[-1].content if req.messages else "")
+        try:
+            from .vector_store import query_knowledge_base_fallback
+            return query_knowledge_base_fallback(latest_message, req.username)
+        except Exception:
+            return _local_fallback(latest_message)
+
+
+@router.get("/documents")
+def list_documents():
+    """Returns a list of all indexed documents in the vector database."""
+    try:
+        from .vector_store import get_indexed_documents
+        return get_indexed_documents()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/index_document")
+def index_document(req: IndexRequest):
+    """Allows manual indexing of new custom document texts via POST request."""
+    try:
+        from llama_index.core import Document
+        from .vector_store import index
+        
+        doc = Document(
+            text=req.content,
+            metadata={
+                "username": req.username or "demo",
+                "type": "custom",
+                "title": req.title
+            }
+        )
+        index.insert(doc)
+        print(f"[chatbot] Custom document '{req.title}' indexed successfully for user '{req.username}'.")
+        return {"status": "success", "message": f"Document '{req.title}' indexed successfully!"}
+    except Exception as e:
+        print(f"[chatbot] Failed to index custom document: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 def _local_fallback(user_input: str) -> dict:

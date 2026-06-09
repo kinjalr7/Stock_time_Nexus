@@ -27,6 +27,7 @@ interface ChatbotProps {
   className?: string;
   /** Optional portfolio context injected so the AI can answer portfolio questions */
   portfolioContext?: string;
+  inline?: boolean;
 }
 
 interface ConversationMessage {
@@ -34,7 +35,7 @@ interface ConversationMessage {
   content: string;
 }
 
-const Chatbot: React.FC<ChatbotProps> = ({ className = '', portfolioContext }) => {
+const Chatbot: React.FC<ChatbotProps> = ({ className = '', portfolioContext, inline = false }) => {
   const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -88,7 +89,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ className = '', portfolioContext }) =
       text: data.reply,
       sender: 'bot',
       timestamp: new Date(),
-      type: 'success',
+      type: data.model === "ChromaDB-retriever (fallback)" ? 'info' : 'success',
       metadata: {
         tokens: data.tokens || 0,
         processingTime: elapsed,
@@ -148,19 +149,19 @@ const Chatbot: React.FC<ChatbotProps> = ({ className = '', portfolioContext }) =
     switch (type) {
       case 'success': return 'border-green-200 bg-green-50 text-gray-800 dark:bg-green-900/30 dark:border-green-700 dark:text-gray-100';
       case 'error':   return 'border-red-200 bg-red-50 text-gray-800 dark:bg-red-900/30 dark:border-red-700 dark:text-gray-100';
-      case 'info':    return 'border-blue-200 bg-blue-50 text-gray-800 dark:bg-blue-900/30 dark:border-blue-700 dark:text-gray-100';
+      case 'info':    return 'border-purple-200 bg-purple-50/50 text-gray-800 dark:bg-purple-900/20 dark:border-purple-800 dark:text-gray-100';
       default:        return 'border-gray-200 bg-white text-gray-800 dark:bg-slate-700 dark:border-slate-600 dark:text-gray-100';
     }
   };
 
   const suggestedQuestions = [
-    'How is AAPL performing today?',
-    'What is the outlook for NVDA?',
-    'Explain RSI to me',
-    'What is my portfolio doing?',
+    'Who is Tirth Patel?',
+    'What AI models does Stock Nexus use?',
+    'What is the accuracy of the predictions?',
+    'Explain the pricing plans',
   ];
 
-  if (isMinimized) {
+  if (isMinimized && !inline) {
     return (
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
@@ -181,14 +182,12 @@ const Chatbot: React.FC<ChatbotProps> = ({ className = '', portfolioContext }) =
 
   return (
     <motion.div
-      initial={{ scale: 0.8, opacity: 0, y: 20 }}
-      animate={{ scale: 1, opacity: 1, y: 0 }}
-      className={`fixed bottom-4 right-4 z-50 ${className}`}
+      initial={inline ? { opacity: 0, y: 10 } : { scale: 0.8, opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={inline ? `w-full h-full relative ${className}` : `fixed bottom-4 right-4 z-50 ${isExpanded ? 'w-[420px] h-[640px]' : 'w-80 h-[520px]'} ${className}`}
     >
       <div
-        className={`bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 overflow-hidden flex flex-col transition-all duration-300 ${
-          isExpanded ? 'w-[420px] h-[640px]' : 'w-80 h-[520px]'
-        }`}
+        className={`bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 overflow-hidden flex flex-col transition-all duration-300 w-full h-full`}
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4 flex items-center justify-between flex-shrink-0">
@@ -205,23 +204,27 @@ const Chatbot: React.FC<ChatbotProps> = ({ className = '', portfolioContext }) =
               <h3 className="font-semibold text-sm">Stock Nexus AI</h3>
               <p className="text-xs text-purple-200 flex items-center gap-1">
                 <Zap className="w-3 h-3" />
-                Powered by LLM
+                Powered by HuggingFace & LlamaIndex
               </p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="p-1 hover:bg-white/20 rounded transition-colors"
-            >
-              {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-            </button>
-            <button
-              onClick={() => setIsMinimized(true)}
-              className="p-1 hover:bg-white/20 rounded transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
+            {!inline && (
+              <>
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="p-1 hover:bg-white/20 rounded transition-colors"
+                >
+                  {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                </button>
+                <button
+                  onClick={() => setIsMinimized(true)}
+                  className="p-1 hover:bg-white/20 rounded transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </>
+            )}
           </div>
         </div>
 

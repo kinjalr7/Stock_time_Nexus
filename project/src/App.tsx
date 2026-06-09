@@ -16,6 +16,7 @@ import Portfolio from './pages/Portfolio';
 import TestPage from './pages/TestPage';
 import ChatbotDemo from './pages/ChatbotDemo';
 import Pricing from './pages/Pricing';
+import Chatbot from './components/Chatbot';
 
 // Protected Route component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -118,6 +119,7 @@ function App() {
               <Route path="/chatbot" element={<ChatbotDemo />} />
               <Route path="/pricing" element={<Pricing />} />
             </Routes>
+            <Chatbot />
             <Footer />
           </div>
         </Router>
