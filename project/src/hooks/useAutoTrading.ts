@@ -1,4 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+
+const API_BASE = 'http://localhost:8000';
 
 export interface Trade {
   id: string;
@@ -146,113 +149,177 @@ export const useAutoTrading = () => {
     setStrategies(defaultStrategies);
   };
 
-  const generateMockTrades = () => {
+  const generateMockTrades = async () => {
     const symbols = ['AAPL', 'TSLA', 'GOOGL', 'MSFT', 'AMZN'];
-    const strategies = ['momentum', 'meanReversion', 'aiPrediction'];
+    const strategyIds = ['momentum', 'meanReversion', 'aiPrediction'];
     const mockTrades: Trade[] = [];
     
-    for (let i = 0; i < 20; i++) {
-      const symbol = symbols[Math.floor(Math.random() * symbols.length)];
-      const type = Math.random() > 0.5 ? 'BUY' : 'SELL';
-      const price = Math.random() * 300 + 50;
-      const quantity = Math.floor(Math.random() * 100) + 10;
-      const pnl = (Math.random() - 0.4) * 1000; // Slight positive bias
-      
-      mockTrades.push({
-        id: `trade-${i}`,
-        symbol,
-        type,
-        quantity,
-        price,
-        timestamp: new Date(Date.now() - Math.random() * 86400000 * 7).toISOString(),
-        pnl,
-        status: 'executed',
-        strategy: strategies[Math.floor(Math.random() * strategies.length)],
-        confidence: Math.random() * 0.3 + 0.7
-      });
+    try {
+      const res = await axios.get(`${API_BASE}/api/stocks/batch?symbols=${symbols.join(',')}`);
+      const prices = res.data.reduce((acc: any, cur: any) => {
+        acc[cur.symbol] = cur.price;
+        return acc;
+      }, {});
+
+      for (let i = 0; i < 20; i++) {
+        const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+        const type = Math.random() > 0.5 ? 'BUY' : 'SELL';
+        const price = prices[symbol] || (Math.random() * 300 + 50);
+        const quantity = Math.floor(Math.random() * 100) + 10;
+        const pnl = (Math.random() - 0.4) * 1000; // Slight positive bias
+        
+        mockTrades.push({
+          id: `trade-${i}`,
+          symbol,
+          type,
+          quantity,
+          price: Math.round(price * 100) / 100,
+          timestamp: new Date(Date.now() - Math.random() * 86400000 * 7).toISOString(),
+          pnl: Math.round(pnl * 100) / 100,
+          status: 'executed',
+          strategy: strategyIds[Math.floor(Math.random() * strategyIds.length)],
+          confidence: Math.round((Math.random() * 0.3 + 0.7) * 100) / 100
+        });
+      }
+    } catch (e) {
+      // Fallback
+      for (let i = 0; i < 20; i++) {
+        const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+        const type = Math.random() > 0.5 ? 'BUY' : 'SELL';
+        const price = Math.random() * 300 + 50;
+        const quantity = Math.floor(Math.random() * 100) + 10;
+        const pnl = (Math.random() - 0.4) * 1000;
+        mockTrades.push({
+          id: `trade-${i}`,
+          symbol,
+          type,
+          quantity,
+          price,
+          timestamp: new Date(Date.now() - Math.random() * 86400000 * 7).toISOString(),
+          pnl,
+          status: 'executed',
+          strategy: strategyIds[Math.floor(Math.random() * strategyIds.length)],
+          confidence: Math.random() * 0.3 + 0.7
+        });
+      }
     }
     
     setTrades(mockTrades.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
   };
 
-  const generateMockPositions = () => {
+  const generateMockPositions = async () => {
     const symbols = ['AAPL', 'TSLA', 'GOOGL', 'MSFT'];
-    const positions: Position[] = symbols.map(symbol => {
-      const quantity = Math.floor(Math.random() * 100) + 10;
-      const avgPrice = Math.random() * 300 + 50;
-      const currentPrice = avgPrice + (Math.random() - 0.4) * 20;
-      const value = quantity * currentPrice;
-      const pnl = (currentPrice - avgPrice) * quantity;
-      const pnlPercent = (pnl / (avgPrice * quantity)) * 100;
+    try {
+      const res = await axios.get(`${API_BASE}/api/stocks/batch?symbols=${symbols.join(',')}`);
+      const prices = res.data.reduce((acc: any, cur: any) => {
+        acc[cur.symbol] = cur.price;
+        return acc;
+      }, {});
+
+      const positions: Position[] = symbols.map(symbol => {
+        const quantity = Math.floor(Math.random() * 100) + 10;
+        const currentPrice = prices[symbol] || (Math.random() * 300 + 50);
+        const avgPrice = currentPrice * (0.9 + Math.random() * 0.15);
+        const value = quantity * currentPrice;
+        const pnl = (currentPrice - avgPrice) * quantity;
+        const pnlPercent = (pnl / (avgPrice * quantity)) * 100;
+        
+        return {
+          symbol,
+          quantity,
+          avgPrice: Math.round(avgPrice * 100) / 100,
+          currentPrice: Math.round(currentPrice * 100) / 100,
+          pnl: Math.round(pnl * 100) / 100,
+          pnlPercent: Math.round(pnlPercent * 100) / 100,
+          value: Math.round(value * 100) / 100
+        };
+      });
       
-      return {
-        symbol,
-        quantity,
-        avgPrice,
-        currentPrice,
-        pnl,
-        pnlPercent,
-        value
-      };
-    });
-    
-    const totalPositionValue = positions.reduce((sum, pos) => sum + pos.value, 0);
-    const totalPnL = positions.reduce((sum, pos) => sum + pos.pnl, 0);
-    
-    setPortfolio(prev => ({
-      ...prev,
-      positions,
-      totalValue: prev.cash + totalPositionValue,
-      totalPnL,
-      totalReturn: (totalPnL / (prev.totalValue - totalPnL)) * 100,
-      dailyPnL: totalPnL * 0.1 // Assume 10% of total PnL is from today
-    }));
+      const totalPositionValue = positions.reduce((sum, pos) => sum + pos.value, 0);
+      const totalPnL = positions.reduce((sum, pos) => sum + pos.pnl, 0);
+      
+      setPortfolio(prev => ({
+        ...prev,
+        positions,
+        totalValue: prev.cash + totalPositionValue,
+        totalPnL: Math.round(totalPnL * 100) / 100,
+        totalReturn: Math.round(((totalPnL / (prev.totalValue - totalPnL)) * 100) * 100) / 100,
+        dailyPnL: Math.round((totalPnL * 0.1) * 100) / 100
+      }));
+    } catch (e) {
+      // Fallback
+      const positions: Position[] = symbols.map(symbol => {
+        const quantity = Math.floor(Math.random() * 100) + 10;
+        const avgPrice = Math.random() * 300 + 50;
+        const currentPrice = avgPrice + (Math.random() - 0.4) * 20;
+        const value = quantity * currentPrice;
+        const pnl = (currentPrice - avgPrice) * quantity;
+        const pnlPercent = (pnl / (avgPrice * quantity)) * 100;
+        
+        return {
+          symbol,
+          quantity,
+          avgPrice,
+          currentPrice,
+          pnl,
+          pnlPercent,
+          value
+        };
+      });
+      const totalPositionValue = positions.reduce((sum, pos) => sum + pos.value, 0);
+      const totalPnL = positions.reduce((sum, pos) => sum + pos.pnl, 0);
+      setPortfolio(prev => ({
+        ...prev,
+        positions,
+        totalValue: prev.cash + totalPositionValue,
+        totalPnL,
+        totalReturn: (totalPnL / (prev.totalValue - totalPnL)) * 100,
+        dailyPnL: totalPnL * 0.1
+      }));
+    }
   };
 
-  const simulateTrading = () => {
+  const simulateTrading = async () => {
     const activeStrategies = strategies.filter(s => s.isActive);
     if (activeStrategies.length === 0) return;
     
-    // Randomly execute a trade based on active strategies
-    if (Math.random() < 0.3) { // 30% chance to execute a trade
+    if (Math.random() < 0.3) {
       const strategy = activeStrategies[Math.floor(Math.random() * activeStrategies.length)];
       const symbols = ['AAPL', 'TSLA', 'GOOGL', 'MSFT', 'AMZN'];
       const symbol = symbols[Math.floor(Math.random() * symbols.length)];
       const type = Math.random() > 0.5 ? 'BUY' : 'SELL';
-      const price = Math.random() * 300 + 50;
-      const quantity = Math.floor(Math.random() * 50) + 5;
+      let price = Math.random() * 300 + 50;
       
+      try {
+        const res = await axios.get(`${API_BASE}/api/stocks/live-price/${symbol}`);
+        if (res.data && res.data.price) {
+          price = res.data.price;
+        }
+      } catch (e) {}
+
+      const quantity = Math.floor(Math.random() * 50) + 5;
       const newTrade: Trade = {
         id: `trade-${Date.now()}`,
         symbol,
         type,
         quantity,
-        price,
+        price: Math.round(price * 100) / 100,
         timestamp: new Date().toISOString(),
-        pnl: 0, // Will be calculated later
+        pnl: Math.round((Math.random() - 0.4) * 200 * 100) / 100,
         status: 'executed',
         strategy: strategy.id,
-        confidence: Math.random() * 0.3 + 0.7
+        confidence: Math.round((Math.random() * 0.3 + 0.7) * 100) / 100
       };
       
-      setTrades(prev => [newTrade, ...prev.slice(0, 49)]); // Keep last 50 trades
+      setTrades(prev => [newTrade, ...prev.slice(0, 49)]);
       
-      // Update portfolio
       setPortfolio(prev => {
         const tradeValue = quantity * price;
-        if (type === 'BUY') {
-          return {
-            ...prev,
-            cash: prev.cash - tradeValue,
-            totalValue: prev.totalValue // Will be recalculated with positions
-          };
-        } else {
-          return {
-            ...prev,
-            cash: prev.cash + tradeValue,
-            totalValue: prev.totalValue
-          };
-        }
+        const newCash = type === 'BUY' ? prev.cash - tradeValue : prev.cash + tradeValue;
+        return {
+          ...prev,
+          cash: Math.round(newCash * 100) / 100
+        };
       });
     }
   };

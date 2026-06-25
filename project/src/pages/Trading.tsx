@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useStockData } from '../hooks/useStockData';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Play, 
@@ -88,11 +89,17 @@ const Trading: React.FC = () => {
     sharpe: strategy.performance.sharpeRatio
   }));
 
+  const { stocks } = useStockData();
+  const getStockPriceBySymbol = (symbol: string, defaultPrice: number) => {
+    const s = stocks.find(x => x.symbol === symbol);
+    return s ? s.price : defaultPrice;
+  };
+
   const recentSignals = [
-    { symbol: 'AAPL', action: 'BUY', confidence: 0.89, price: 182.50, strategy: 'AI Prediction', time: '2 min ago' },
-    { symbol: 'TSLA', action: 'SELL', confidence: 0.76, price: 248.91, strategy: 'Momentum', time: '5 min ago' },
-    { symbol: 'GOOGL', action: 'HOLD', confidence: 0.65, price: 142.38, strategy: 'Mean Reversion', time: '8 min ago' },
-    { symbol: 'MSFT', action: 'BUY', confidence: 0.82, price: 378.85, strategy: 'AI Prediction', time: '12 min ago' }
+    { symbol: 'AAPL', action: 'BUY', confidence: 0.89, price: getStockPriceBySymbol('AAPL', 182.50), strategy: 'AI Prediction', time: '2 min ago' },
+    { symbol: 'TSLA', action: 'SELL', confidence: 0.76, price: getStockPriceBySymbol('TSLA', 248.91), strategy: 'Momentum', time: '5 min ago' },
+    { symbol: 'GOOGL', action: 'HOLD', confidence: 0.65, price: getStockPriceBySymbol('GOOGL', 142.38), strategy: 'Mean Reversion', time: '8 min ago' },
+    { symbol: 'MSFT', action: 'BUY', confidence: 0.82, price: getStockPriceBySymbol('MSFT', 378.85), strategy: 'AI Prediction', time: '12 min ago' }
   ];
 
   const handlePriceRangeSubmit = (e: React.FormEvent) => {
