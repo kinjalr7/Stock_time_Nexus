@@ -7,3 +7,8 @@ yfinance
 httpx
 python-dotenv
 bcrypt
+pandas
+numpy
+scikit-learn
+statsmodels
+scipy

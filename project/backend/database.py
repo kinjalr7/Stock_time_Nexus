@@ -53,6 +53,20 @@ def init_db():
 
         # Portfolio holdings — persisted across restarts
         cur.execute("""
+            CREATE TABLE IF NOT EXISTS model_metrics (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                symbol TEXT NOT NULL,
+                model_type TEXT NOT NULL,
+                mae REAL,
+                rmse REAL,
+                r2 REAL,
+                trained_at TEXT,
+                UNIQUE(symbol, model_type)
+            )
+        """)
+
+        # Portfolio holdings — persisted across restarts
+        cur.execute("""
             CREATE TABLE IF NOT EXISTS portfolio_holdings (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT NOT NULL DEFAULT 'demo',

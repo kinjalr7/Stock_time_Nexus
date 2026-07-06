@@ -71,45 +71,35 @@ export const useMLModels = () => {
   }, []);
 
   const initializeModels = () => {
+    // Initialise with placeholder models; predictions will be loaded on demand.
     const initialModels: MLModel[] = [
       {
         name: 'LSTM',
         type: 'LSTM',
         status: 'trained',
         metrics: {
-          accuracy: 94.2,
-          rmse: 0.032,
-          mae: 0.024,
-          mape: 1.8,
-          r2Score: 0.89,
-          mse: 0.001024,
-          bias: 0.002,
-          variance: 0.0008,
-          adjustedR2: 0.885,
-          aic: -245.6,
-          bic: -238.2
+          accuracy: 0,
+          rmse: 0,
+          mae: 0,
+          mape: 0,
+          r2Score: 0,
+          mse: 0,
+          bias: 0,
+          variance: 0,
+          adjustedR2: 0,
+          aic: 0,
+          bic: 0,
         },
-        predictions: generatePredictions('LSTM'),
-        trainingProgress: 100,
-        lastTrained: new Date(Date.now() - 3600000).toISOString(),
-        parameters: {
-          epochs: 100,
-          batchSize: 32,
-          learningRate: 0.001,
-          hiddenUnits: 50,
-          dropout: 0.2
-        }
+        predictions: [],
+        trainingProgress: 0,
+        lastTrained: '',
+        parameters: {}
       },
       {
         name: 'Prophet',
         type: 'Prophet',
         status: 'trained',
         metrics: {
-          accuracy: 89.7,
-          rmse: 0.045,
-          mae: 0.031,
-          mape: 2.3,
-          r2Score: 0.82,
           mse: 0.002025,
           bias: 0.005,
           variance: 0.0012,
@@ -216,99 +206,74 @@ export const useMLModels = () => {
     setModels(initialModels);
   };
 
-  const generatePredictions = (modelType: string): ModelPrediction[] => {
-    const basePrice = 180;
-    const predictions: ModelPrediction[] = [];
-    
-    // Historical data with actual values
-    for (let i = -30; i < 0; i++) {
-      const date = new Date();
-      date.setDate(date.getDate() + i);
-      const noise = (Math.random() - 0.5) * 10;
-      const trend = i * 0.1;
-      const actual = basePrice + trend + noise;
-      const predicted = actual + (Math.random() - 0.5) * 2; // Small prediction error
-      
-      predictions.push({
-        date: date.toISOString().split('T')[0],
-        actual,
-        predicted,
-        confidence: 0.8 + Math.random() * 0.15
-      });
+  // --- Real backend integration ---------------------------------------------------
+  // Fetch a 30‑day forecast from the FastAPI endpoint.
+  const fetchForecast = async (symbol: string, modelType: string): Promise<ModelPrediction[]> => {
+    const resp = await fetch(`/api/models/forecast/${symbol}?model_type=${modelType}`);
+    if (!resp.ok) {
+      throw new Error(`Failed to fetch forecast: ${resp.statusText}`);
     }
-    
-    // Future predictions
-    for (let i = 0; i < 30; i++) {
-      const date = new Date();
-      date.setDate(date.getDate() + i);
-      const trend = i * 0.2;
-      const seasonality = Math.sin(i * 0.2) * 2;
-      const noise = (Math.random() - 0.5) * 5;
-      
-      let modelBias = 0;
-      switch (modelType) {
-        case 'LSTM':
-          modelBias = Math.sin(i * 0.1) * 3;
-          break;
-        case 'Prophet':
-          modelBias = i * 0.1;
-          break;
-        case 'ARIMA':
-          modelBias = (Math.random() - 0.5) * 2;
-          break;
-        case 'RandomForest':
-          modelBias = Math.cos(i * 0.15) * 2;
-          break;
-        case 'XGBoost':
-          modelBias = i * 0.05 + Math.sin(i * 0.2);
-          break;
-      }
-      
-      predictions.push({
-        date: date.toISOString().split('T')[0],
-        predicted: basePrice + trend + seasonality + noise + modelBias,
-        confidence: 0.9 - (i * 0.01) // Confidence decreases over time
-      });
-    }
-    
-    return predictions;
+    const data = await resp.json();
+    // Backend returns objects with {date, predicted, confidence}
+    // Ensure the shape matches ModelPrediction (actual may be undefined).
+    return data.map((item: any) => ({
+      date: item.date,
+      predicted: item.predicted,
+      confidence: item.confidence,
+    }));
   };
 
-  const trainModel = async (modelName: string, parameters?: Record<string, any>) => {
+  // Trigger model (re)training on the backend.
+  const trainModelAPI = async (symbol: string, modelType: string): Promise<any> => {
+    const resp = await fetch(`/api/models/train/${symbol}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model_type: modelType }),
+    });
+    if (!resp.ok) {
+      throw new Error(`Training failed: ${resp.statusText}`);
+    }
+    return await resp.json();
+  };
+
+
+  const trainModel = async (symbol: string, modelName: string) => {
     setIsTraining(true);
-    
     const modelIndex = models.findIndex(m => m.name === modelName);
     if (modelIndex === -1) return;
-    
     const updatedModels = [...models];
     updatedModels[modelIndex] = {
       ...updatedModels[modelIndex],
       status: 'training',
-      trainingProgress: 0
+      trainingProgress: 0,
     };
     setModels(updatedModels);
-    
-    // Simulate training progress
-    for (let progress = 0; progress <= 100; progress += 10) {
-      await new Promise(resolve => setTimeout(resolve, 200));
-      updatedModels[modelIndex].trainingProgress = progress;
-      setModels([...updatedModels]);
+    try {
+      // Call backend to (re)train the model
+      const result = await trainModelAPI(symbol, modelName);
+      // After training, fetch fresh forecast data
+      const freshPreds = await fetchForecast(symbol, modelName);
+      updatedModels[modelIndex] = {
+        ...updatedModels[modelIndex],
+        status: 'trained',
+        trainingProgress: 100,
+        lastTrained: new Date().toISOString(),
+        predictions: freshPreds,
+        metrics: {
+          ...updatedModels[modelIndex].metrics,
+          // Use backend‑provided metrics if present
+          accuracy: result.accuracy ?? updatedModels[modelIndex].metrics.accuracy,
+          rmse: result.rmse ?? updatedModels[modelIndex].metrics.rmse,
+        },
+        parameters: result,
+      };
+    } catch (e) {
+      console.error(e);
+      updatedModels[modelIndex] = {
+        ...updatedModels[modelIndex],
+        status: 'error',
+      };
     }
-    
-    // Update model with new results
-    updatedModels[modelIndex] = {
-      ...updatedModels[modelIndex],
-      status: 'trained',
-      trainingProgress: 100,
-      lastTrained: new Date().toISOString(),
-      predictions: generatePredictions(modelName),
-      metrics: {
-        ...updatedModels[modelIndex].metrics,
-        accuracy: Math.min(95, updatedModels[modelIndex].metrics.accuracy + Math.random() * 2 - 1)
-      },
-      parameters: parameters || updatedModels[modelIndex].parameters
-    };
-    
     setModels([...updatedModels]);
     setIsTraining(false);
   };
