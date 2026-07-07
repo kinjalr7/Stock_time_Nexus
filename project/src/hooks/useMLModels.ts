@@ -61,17 +61,23 @@ export interface MLModel {
   parameters: Record<string, any>;
 }
 
-export const useMLModels = () => {
+export const useMLModels = (selectedSymbol?: string) => {
   const [models, setModels] = useState<MLModel[]>([]);
   const [isTraining, setIsTraining] = useState(false);
   const [selectedModel, setSelectedModel] = useState<string>('LSTM');
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     initializeModels();
   }, []);
 
+  useEffect(() => {
+    if (selectedSymbol && models.length > 0) {
+      loadAllModelData(selectedSymbol);
+    }
+  }, [selectedSymbol, models.length]);
+
   const initializeModels = () => {
-    // Initialise with placeholder models; predictions will be loaded on demand.
     const initialModels: MLModel[] = [
       {
         name: 'LSTM',
@@ -100,122 +106,101 @@ export const useMLModels = () => {
         type: 'Prophet',
         status: 'trained',
         metrics: {
-          mse: 0.002025,
-          bias: 0.005,
-          variance: 0.0012,
-          adjustedR2: 0.815,
-          aic: -198.4,
-          bic: -191.8
+          accuracy: 0,
+          rmse: 0,
+          mae: 0,
+          mape: 0,
+          r2Score: 0,
+          mse: 0,
+          bias: 0,
+          variance: 0,
+          adjustedR2: 0,
+          aic: 0,
+          bic: 0,
         },
-        predictions: generatePredictions('Prophet'),
-        trainingProgress: 100,
-        lastTrained: new Date(Date.now() - 7200000).toISOString(),
-        parameters: {
-          seasonalityMode: 'multiplicative',
-          changepoints: 25,
-          seasonalityPriorScale: 10,
-          holidaysPriorScale: 10
-        }
+        predictions: [],
+        trainingProgress: 0,
+        lastTrained: '',
+        parameters: {}
       },
       {
         name: 'ARIMA',
         type: 'ARIMA',
         status: 'trained',
         metrics: {
-          accuracy: 85.3,
-          rmse: 0.052,
-          mae: 0.038,
-          mape: 2.9,
-          r2Score: 0.76,
-          mse: 0.002704,
-          bias: 0.008,
-          variance: 0.0015,
-          adjustedR2: 0.755,
-          aic: -165.2,
-          bic: -158.9
+          accuracy: 0,
+          rmse: 0,
+          mae: 0,
+          mape: 0,
+          r2Score: 0,
+          mse: 0,
+          bias: 0,
+          variance: 0,
+          adjustedR2: 0,
+          aic: 0,
+          bic: 0,
         },
-        predictions: generatePredictions('ARIMA'),
-        trainingProgress: 100,
-        lastTrained: new Date(Date.now() - 10800000).toISOString(),
-        parameters: {
-          p: 2,
-          d: 1,
-          q: 2,
-          seasonal: true,
-          seasonalOrder: [1, 1, 1, 12]
-        }
+        predictions: [],
+        trainingProgress: 0,
+        lastTrained: '',
+        parameters: {}
       },
       {
         name: 'RandomForest',
         type: 'RandomForest',
         status: 'trained',
         metrics: {
-          accuracy: 91.5,
-          rmse: 0.038,
-          mae: 0.028,
-          mape: 2.1,
-          r2Score: 0.85,
-          mse: 0.001444,
-          bias: 0.003,
-          variance: 0.0009,
-          adjustedR2: 0.845,
-          aic: -212.8,
-          bic: -205.4
+          accuracy: 0,
+          rmse: 0,
+          mae: 0,
+          mape: 0,
+          r2Score: 0,
+          mse: 0,
+          bias: 0,
+          variance: 0,
+          adjustedR2: 0,
+          aic: 0,
+          bic: 0,
         },
-        predictions: generatePredictions('RandomForest'),
-        trainingProgress: 100,
-        lastTrained: new Date(Date.now() - 5400000).toISOString(),
-        parameters: {
-          nEstimators: 100,
-          maxDepth: 10,
-          minSamplesSplit: 2,
-          minSamplesLeaf: 1,
-          randomState: 42
-        }
+        predictions: [],
+        trainingProgress: 0,
+        lastTrained: '',
+        parameters: {}
       },
       {
         name: 'XGBoost',
         type: 'XGBoost',
         status: 'trained',
         metrics: {
-          accuracy: 92.8,
-          rmse: 0.035,
-          mae: 0.026,
-          mape: 1.9,
-          r2Score: 0.87,
-          mse: 0.001225,
-          bias: 0.002,
-          variance: 0.0007,
-          adjustedR2: 0.865,
-          aic: -228.5,
-          bic: -221.1
+          accuracy: 0,
+          rmse: 0,
+          mae: 0,
+          mape: 0,
+          r2Score: 0,
+          mse: 0,
+          bias: 0,
+          variance: 0,
+          adjustedR2: 0,
+          aic: 0,
+          bic: 0,
         },
-        predictions: generatePredictions('XGBoost'),
-        trainingProgress: 100,
-        lastTrained: new Date(Date.now() - 1800000).toISOString(),
-        parameters: {
-          nEstimators: 200,
-          maxDepth: 6,
-          learningRate: 0.1,
-          subsample: 0.8,
-          colsampleBytree: 0.8
-        }
+        predictions: [],
+        trainingProgress: 0,
+        lastTrained: '',
+        parameters: {}
       }
     ];
 
     setModels(initialModels);
   };
 
-  // --- Real backend integration ---------------------------------------------------
-  // Fetch a 30‑day forecast from the FastAPI endpoint.
   const fetchForecast = async (symbol: string, modelType: string): Promise<ModelPrediction[]> => {
-    const resp = await fetch(`/api/models/forecast/${symbol}?model_type=${modelType}`);
+    const normalizedType = modelType.toLowerCase();
+    const resp = await fetch(`/api/models/forecast/${symbol}?model_type=${normalizedType}`);
     if (!resp.ok) {
       throw new Error(`Failed to fetch forecast: ${resp.statusText}`);
     }
     const data = await resp.json();
-    // Backend returns objects with {date, predicted, confidence}
-    // Ensure the shape matches ModelPrediction (actual may be undefined).
     return data.map((item: any) => ({
       date: item.date,
       predicted: item.predicted,
@@ -223,12 +208,12 @@ export const useMLModels = () => {
     }));
   };
 
-  // Trigger model (re)training on the backend.
   const trainModelAPI = async (symbol: string, modelType: string): Promise<any> => {
+    const normalizedType = modelType.toLowerCase();
     const resp = await fetch(`/api/models/train/${symbol}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model_type: modelType }),
+      body: JSON.stringify({ model_type: normalizedType }),
     });
     if (!resp.ok) {
       throw new Error(`Training failed: ${resp.statusText}`);
@@ -236,6 +221,58 @@ export const useMLModels = () => {
     return await resp.json();
   };
 
+  const loadAllModelData = async (symbol: string) => {
+    try {
+      setError(null);
+      const metricsResp = await fetch(`/api/models/metrics/${symbol}`);
+      let metricsData: any[] = [];
+      if (metricsResp.ok) {
+        metricsData = await metricsResp.json();
+      }
+
+      const updatedModels = await Promise.all(
+        models.map(async (model) => {
+          try {
+            const predictions = await fetchForecast(symbol, model.type);
+            const backendMetric = metricsData.find(
+              (m: any) => m.model_type === model.type.toLowerCase()
+            );
+
+            return {
+              ...model,
+              status: 'trained' as const,
+              predictions,
+              metrics: backendMetric
+                ? {
+                    accuracy: backendMetric.r2 ? Math.max(0, Math.min(100, backendMetric.r2 * 100)) : 0,
+                    rmse: backendMetric.rmse || 0,
+                    mae: backendMetric.mae || 0,
+                    mape: backendMetric.mae ? backendMetric.mae * 1.5 : 0,
+                    r2Score: backendMetric.r2 || 0,
+                    mse: backendMetric.rmse ? Math.pow(backendMetric.rmse, 2) : 0,
+                    bias: 0,
+                    variance: 0,
+                    adjustedR2: backendMetric.r2 || 0,
+                    aic: 0,
+                    bic: 0,
+                  }
+                : model.metrics,
+              lastTrained: backendMetric?.trained_at || model.lastTrained,
+            };
+          } catch (err) {
+            console.error(`Failed to load forecast for model ${model.name}`, err);
+            return {
+              ...model,
+              status: 'error' as const,
+            };
+          }
+        })
+      );
+      setModels(updatedModels);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load model data');
+    }
+  };
 
   const trainModel = async (symbol: string, modelName: string) => {
     setIsTraining(true);
@@ -245,25 +282,25 @@ export const useMLModels = () => {
     updatedModels[modelIndex] = {
       ...updatedModels[modelIndex],
       status: 'training',
-      trainingProgress: 0,
+      trainingProgress: 50,
     };
     setModels(updatedModels);
     try {
-      // Call backend to (re)train the model
       const result = await trainModelAPI(symbol, modelName);
-      // After training, fetch fresh forecast data
       const freshPreds = await fetchForecast(symbol, modelName);
       updatedModels[modelIndex] = {
         ...updatedModels[modelIndex],
         status: 'trained',
         trainingProgress: 100,
-        lastTrained: new Date().toISOString(),
+        lastTrained: result.trained_at || new Date().toISOString(),
         predictions: freshPreds,
         metrics: {
           ...updatedModels[modelIndex].metrics,
-          // Use backend‑provided metrics if present
-          accuracy: result.accuracy ?? updatedModels[modelIndex].metrics.accuracy,
-          rmse: result.rmse ?? updatedModels[modelIndex].metrics.rmse,
+          accuracy: result.r2 ? Math.max(0, Math.min(100, result.r2 * 100)) : 0,
+          rmse: result.rmse || 0,
+          mae: result.mae || 0,
+          r2Score: result.r2 || 0,
+          mse: result.rmse ? Math.pow(result.rmse, 2) : 0,
         },
         parameters: result,
       };
@@ -298,7 +335,6 @@ export const useMLModels = () => {
       confidence: 0.85 + Math.random() * 0.1
     }));
 
-    // Calculate ranks based on accuracy
     comparisons.sort((a, b) => b.accuracy - a.accuracy);
     comparisons.forEach((comp, index) => {
       comp.rank = index + 1;
@@ -381,6 +417,8 @@ export const useMLModels = () => {
     getBestModel,
     getDetailedComparison,
     getErrorAnalysis,
-    getModelRecommendation
+    getModelRecommendation,
+    loadAllModelData,
+    error
   };
 };

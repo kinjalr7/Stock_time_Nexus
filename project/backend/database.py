@@ -64,6 +64,7 @@ def init_db():
                 UNIQUE(symbol, model_type)
             )
         """)
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_model_metrics_symbol ON model_metrics(symbol)")
 
         # Portfolio holdings — persisted across restarts
         cur.execute("""

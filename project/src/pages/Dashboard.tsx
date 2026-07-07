@@ -44,6 +44,7 @@ import {
 } from 'recharts';
 import { useStockData } from '../hooks/useStockData';
 import StockSearch from '../components/StockSearch';
+import { useMLModels } from '../hooks/useMLModels';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -264,14 +265,12 @@ const Dashboard: React.FC = () => {
     lastUpdated,
   } = useStockData();
 
+  const { models, trainModel, loadAllModelData, isTraining } = useMLModels(selectedStock);
+
   const [activeTab, setActiveTab] = useState<ChartTab>('candlestick');
   const [forecastHorizon, setForecastHorizon] = useState(30);
   const [selectedModels, setSelectedModels] = useState<ModelKey[]>(['ARIMA', 'Prophet', 'LSTM']);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [forecastData, setForecastData] = useState<any[]>([]);
-  const [confidences, setConfidences] = useState<Record<ModelKey, number>>({
-    ARIMA: 72, Prophet: 81, LSTM: 68, XGBoost: 85, RandomForest: 77,
-  });
 
   const currentStockData = getStockBySymbol(selectedStock);
 
@@ -281,40 +280,24 @@ const Dashboard: React.FC = () => {
     );
   };
 
-  const generateForecasts = () => {
-    if (!currentStockData) return;
+  const generateForecasts = async () => {
+    if (!selectedStock) return;
     setIsGenerating(true);
-    const hist = currentStockData.historicalData;
-    const lastPrice = hist[hist.length - 1]?.close ?? currentStockData.price;
-
-    // update confidence meters randomly
-    setConfidences({
-      ARIMA:        60 + Math.random() * 25,
-      Prophet:      65 + Math.random() * 25,
-      LSTM:         55 + Math.random() * 30,
-      XGBoost:      70 + Math.random() * 20,
-      RandomForest: 65 + Math.random() * 25,
-    });
-
-    const newData: any[] = [];
-    for (let i = 1; i <= forecastHorizon; i++) {
-      const d = new Date(hist[hist.length - 1]?.date ?? Date.now());
-      d.setDate(d.getDate() + i);
-      const point: any = { date: d.toISOString().split('T')[0] };
-      if (selectedModels.includes('ARIMA'))        point.ARIMA        = +(lastPrice + (Math.random() - 0.45) * i * 0.6).toFixed(2);
-      if (selectedModels.includes('Prophet'))      point.Prophet      = +(lastPrice + Math.sin(i / 8) * i * 0.3 + (Math.random() - 0.5) * 4).toFixed(2);
-      if (selectedModels.includes('LSTM'))         point.LSTM         = +(lastPrice + (Math.random() - 0.5) * i * 1.3).toFixed(2);
-      if (selectedModels.includes('XGBoost'))      point.XGBoost      = +(lastPrice + (Math.random() - 0.48) * i * 0.7).toFixed(2);
-      if (selectedModels.includes('RandomForest')) point.RandomForest = +(lastPrice + (Math.random() - 0.47) * i * 0.5).toFixed(2);
-      newData.push(point);
+    try {
+      // Retrain the selected models
+      for (const model of selectedModels) {
+        await trainModel(selectedStock, model);
+      }
+      await loadAllModelData(selectedStock);
+    } catch (e) {
+      console.error("Forecast generation failed", e);
+    } finally {
+      setIsGenerating(false);
     }
-
-    setTimeout(() => { setForecastData(newData); setIsGenerating(false); }, 1400);
   };
 
   const handleStockSearch = async (symbol: string) => {
     await searchStock(symbol);
-    setForecastData([]);
   };
 
   // Build chart datasets
@@ -346,17 +329,38 @@ const Dashboard: React.FC = () => {
     }));
   }, [currentStockData]);
 
+  // Construct forecast data from real backend models
+  const realForecastData = useMemo(() => {
+    if (!models || models.length === 0) return [];
+    
+    // Group predictions by date
+    const dateMap: Record<string, any> = {};
+    
+    models.forEach(model => {
+      if (model.status === 'trained' && selectedModels.includes(model.type as ModelKey)) {
+        model.predictions.forEach(p => {
+          if (!dateMap[p.date]) {
+            dateMap[p.date] = { date: p.date };
+          }
+          dateMap[p.date][model.type] = p.predicted;
+        });
+      }
+    });
+    
+    return Object.values(dateMap).sort((a: any, b: any) => a.date.localeCompare(b.date));
+  }, [models, selectedModels]);
+
   const fullForecastData = useMemo(() => {
-    if (!currentStockData) return forecastData;
+    if (!currentStockData) return [];
     const last = currentStockData.historicalData.slice(-20).map((d) => ({
       date: d.date?.slice(5),
       Historical: d.close,
     }));
     return [
       ...last,
-      ...forecastData.map((d) => ({ ...d, date: d.date?.slice(5) })),
+      ...realForecastData.map((d) => ({ ...d, date: d.date?.slice(5) })),
     ];
-  }, [currentStockData, forecastData]);
+  }, [currentStockData, realForecastData]);
 
   const ti = currentStockData?.technicalIndicators;
   const sentiment = currentStockData?.sentiment;
@@ -755,6 +759,8 @@ const Dashboard: React.FC = () => {
                 {(Object.keys(MODEL_CONFIG) as ModelKey[]).map((model) => {
                   const cfg = MODEL_CONFIG[model];
                   const active = selectedModels.includes(model);
+                  const targetModel = models.find((m) => m.type.toLowerCase() === model.toLowerCase());
+                  const accuracy = targetModel?.metrics.accuracy || 0;
                   return (
                     <button
                       key={model}
@@ -773,9 +779,9 @@ const Dashboard: React.FC = () => {
                       </div>
                       {active && (
                         <div className="relative">
-                          <CircularMeter value={confidences[model]} color={cfg.color} size={38} />
+                          <CircularMeter value={accuracy} color={cfg.color} size={38} />
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="text-[9px] font-bold" style={{ color: cfg.color }}>{confidences[model].toFixed(0)}%</span>
+                            <span className="text-[9px] font-bold" style={{ color: cfg.color }}>{accuracy.toFixed(0)}%</span>
                           </div>
                         </div>
                       )}

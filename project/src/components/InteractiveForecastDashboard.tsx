@@ -103,7 +103,7 @@ const InteractiveForecastDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'forecast' | 'comparison' | 'analysis'>('forecast');
 
   const { stocks, loading, searchStock, getStockBySymbol } = useStockData();
-  const { models, compareModels, getModelRecommendation } = useMLModels();
+  const { models, compareModels, getModelRecommendation, trainModel, error } = useMLModels(config.stockSymbol);
 
   const currentStock = getStockBySymbol(config.stockSymbol);
 
