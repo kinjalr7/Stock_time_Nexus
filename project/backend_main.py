@@ -48,4 +48,5 @@ app.include_router(chatbot_router,          prefix="/api/chat",        tags=["AI
 
 @app.get("/api/health")
 def health():
+    # Force reload of uvicorn dev server to pick up new .env variables
     return {"status": "ok", "version": "2.0.0"}

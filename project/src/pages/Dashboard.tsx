@@ -966,10 +966,10 @@ const Dashboard: React.FC = () => {
               <h3 className="text-sm font-bold text-gray-800 dark:text-white uppercase tracking-widest mb-4 flex items-center gap-2">
                 <AlertCircle className="h-4 w-4 text-amber-600 dark:text-yellow-400" /> AI Consensus
               </h3>
-              {forecastData.length > 0 ? (
+              {realForecastData.length > 0 ? (
                 <div className="space-y-3">
                   {selectedModels.map((model) => {
-                    const lastForecast = forecastData[forecastData.length - 1]?.[model];
+                    const lastForecast = realForecastData[realForecastData.length - 1]?.[model];
                     if (!lastForecast) return null;
                     const delta = lastForecast - price;
                     const pct = (delta / price) * 100;
